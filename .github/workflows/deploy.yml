@@ -1,0 +1,58 @@
+name: Deploy Laravel para VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: vps66629.publiccloud.com.br
+          username: deploy
+          key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACBknvEEVS6EGx6uwzeTdyppB9Ntde2MscOTC6lu3b0sVAAAAKDx/2j28f9o
+            9gAAAAtzc2gtZWQyNTUxOQAAACBknvEEVS6EGx6uwzeTdyppB9Ntde2MscOTC6lu3b0sVA
+            AAAED9XQUSPEO3SS5Yr9fvLFeID5SNsc7g2c8ybI6Et5KbIWSe8QRVLoQbHq7DN5N3KmkH
+            02117Yyxw5MLqW7dvSxUAAAAGGRlcGxveUBkb2xlbmhhZG9yLmNvbS5icgECAwQF
+            -----END OPENSSH PRIVATE KEY-----
+          script: |
+            cd /var/www/html/cruzdeossos
+
+            echo "=== Pull latest code ==="
+            git pull origin main
+
+            echo "=== Composer install ==="
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "=== Clear old cache first ==="
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+
+            echo "=== Run migrations ==="
+            php artisan migrate --force
+
+            echo "=== Generate fresh caches ==="
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "=== Set permissions ==="
+            chown -R deploy:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+
+            echo "=== Restart services ==="
+            sudo systemctl reload apache2
+
+            echo "✅ Deploy finalizado com sucesso!"
