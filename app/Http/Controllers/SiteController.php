@@ -43,7 +43,7 @@ class SiteController extends Controller
             'cta_kicker' => 'Passeio definitivo',
             'cta_titulo' => 'Mantenha a memória viva',
             'cta_btn_texto' => 'Ver Galeria',
-            'cta_btn_link' => '#gallery',
+            'cta_btn_link' => '/galeria',
             'cta_imagem' => 'banners/banner-5-esboco.png',
             'junte_se_kicker' => 'Faça parte',
             'junte_se_titulo' => 'Junte-se ao clube',
@@ -68,5 +68,23 @@ class SiteController extends Controller
             'secoes',
             'conteudo'
         ));
+    }
+
+    public function galeria()
+    {
+        if (!Configuracao::secaoAtiva('sec_galeria')) {
+            return redirect()->route('home');
+        }
+
+        $galeria = Galeria::publicados()->get();
+        $secoes = Configuracao::secoes();
+
+        $conteudo = Conteudo::muitos([
+            'galeria_kicker' => 'Momentos',
+            'galeria_titulo' => 'Galeria da Irmandade',
+            'galeria_subtitulo' => 'Cada foto conta um pedaço da nossa história. Passeios, reuniões e momentos de irmandade.',
+        ]);
+
+        return view('site.galeria', compact('galeria', 'secoes', 'conteudo'));
     }
 }

@@ -32,7 +32,7 @@
           @if($secoes['sec_por_que_nos'] ?? true)<li><a href="#why">Por Que Nós</a></li>@endif
           @if($secoes['sec_evolucao'] ?? true)<li><a href="#evolution">Evolução</a></li>@endif
           @if($secoes['sec_integrantes'] ?? true)<li><a href="#crew">Integrantes</a></li>@endif
-          @if($secoes['sec_galeria'] ?? true)<li><a href="#gallery">Galeria</a></li>@endif
+          @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}">Galeria</a></li>@endif
           @if($secoes['sec_noticias'] ?? true)<li><a href="#news">Notícias</a></li>@endif
           @if($secoes['sec_contato'] ?? true)<li><a href="#contact">Contato</a></li>@endif
         </ul>
@@ -195,10 +195,14 @@
       </div>
       <div class="gallery__grid">
         @foreach($galeria as $item)
-        <div class="gallery__item" style="background-image:url('{{ asset('storage/' . $item->imagem) }}')">
+        <div class="gallery__item" data-lightbox="{{ asset('storage/' . $item->imagem) }}" data-title="{{ $item->titulo }}" data-desc="{{ $item->descricao }}">
+          <img src="{{ asset('storage/' . $item->imagem) }}" alt="{{ $item->titulo }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
           <span>{{ $item->titulo }}</span>
         </div>
         @endforeach
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <a href="{{ route('galeria') }}" class="btn btn--ghost">Ver todas as fotos</a>
       </div>
     </div>
   </section>
@@ -356,7 +360,7 @@
         <ul>
           @if($secoes['sec_sobre'] ?? true)<li><a href="#about">O Clube</a></li>@endif
           @if($secoes['sec_eventos'] ?? true)<li><a href="#events">Eventos</a></li>@endif
-          @if($secoes['sec_galeria'] ?? true)<li><a href="#gallery">Galeria</a></li>@endif
+          @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}">Galeria</a></li>@endif
           @if($secoes['sec_contato'] ?? true)<li><a href="#contact">Contato</a></li>@endif
         </ul>
       </div>
