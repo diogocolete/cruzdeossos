@@ -67,20 +67,6 @@
     </div>
   </section>
 
-  <!-- ===== LIGHTBOX ===== -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">&times;</button>
-    <button class="lightbox__prev" id="lightboxPrev" aria-label="Anterior">&#10094;</button>
-    <button class="lightbox__next" id="lightboxNext" aria-label="Próximo">&#10095;</button>
-    <div class="lightbox__content">
-      <img src="" alt="" id="lightboxImg" />
-      <div class="lightbox__caption">
-        <h3 id="lightboxTitle"></h3>
-        <p id="lightboxDesc"></p>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
     <div class="container footer__top">
