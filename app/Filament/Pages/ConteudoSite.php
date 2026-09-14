@@ -66,6 +66,18 @@ class ConteudoSite extends Page
             'contato_email' => ['label' => 'Contato — E-mail', 'tipo' => 'text', 'default' => 'contato@cruzdeossos.com.br', 'section' => 'Contato'],
             'contato_endereco_titulo' => ['label' => 'Contato — Título do endereço', 'tipo' => 'text', 'default' => 'Sede da irmandade', 'section' => 'Contato'],
             'contato_endereco' => ['label' => 'Contato — Endereço', 'tipo' => 'text', 'default' => 'Curitiba, PR — Brasil', 'section' => 'Contato'],
+
+            // REDES SOCIAIS
+            'social_facebook' => ['label' => 'Facebook — URL', 'tipo' => 'text', 'default' => '', 'section' => 'Redes Sociais'],
+            'social_instagram' => ['label' => 'Instagram — URL', 'tipo' => 'text', 'default' => '', 'section' => 'Redes Sociais'],
+            'social_twitter' => ['label' => 'Twitter / X — URL', 'tipo' => 'text', 'default' => '', 'section' => 'Redes Sociais'],
+            'social_youtube' => ['label' => 'YouTube — URL', 'tipo' => 'text', 'default' => '', 'section' => 'Redes Sociais'],
+
+            // RODAPÉ
+            'footer_descricao' => ['label' => 'Rodapé — Descrição', 'tipo' => 'textarea', 'default' => 'Cavaleiros da estrada, irmãos da cruz. Irmandade desde 22/03/2025.', 'section' => 'Rodapé'],
+            'footer_telefone' => ['label' => 'Rodapé — Telefone', 'tipo' => 'text', 'default' => '+55 (41) 99999-9999', 'section' => 'Rodapé'],
+            'footer_email' => ['label' => 'Rodapé — E-mail', 'tipo' => 'text', 'default' => 'contato@cruzdeossos.com.br', 'section' => 'Rodapé'],
+            'footer_endereco' => ['label' => 'Rodapé — Endereço', 'tipo' => 'text', 'default' => 'Curitiba, PR', 'section' => 'Rodapé'],
         ];
     }
 

@@ -5,17 +5,7 @@
 @section('content')
 
   <!-- ===== TOP BAR ===== -->
-  <div class="topbar">
-    <div class="container topbar__inner">
-      <a href="mailto:contato@cruzdeossos.com.br" class="topbar__email">contato@cruzdeossos.com.br</a>
-      <div class="topbar__social">
-        <a href="#" aria-label="Facebook">FB</a>
-        <a href="#" aria-label="Instagram">IG</a>
-        <a href="#" aria-label="Twitter">TW</a>
-        <a href="#" aria-label="YouTube">YT</a>
-      </div>
-    </div>
-  </div>
+  @include('site.partials.topbar')
 
   <!-- ===== HEADER ===== -->
   <header class="header" id="header">
@@ -68,50 +58,6 @@
   </section>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="container footer__top">
-      <div class="footer__brand">
-        <img src="{{ asset('assets/logo-vetorial.png') }}" alt="Cruz de Ossos" />
-        <p>Cavaleiros da estrada, irmãos da cruz. Irmandade desde 22/03/2025.</p>
-        <div class="footer__social">
-          <a href="#" aria-label="Facebook">FB</a>
-          <a href="#" aria-label="Twitter">TW</a>
-          <a href="#" aria-label="Instagram">IG</a>
-        </div>
-      </div>
-      <div class="footer__col">
-        <h4>Links rápidos</h4>
-        <ul>
-          @if($secoes['sec_sobre'] ?? true)<li><a href="{{ route('home') }}#about">O Clube</a></li>@endif
-          @if($secoes['sec_eventos'] ?? true)<li><a href="{{ route('home') }}#events">Eventos</a></li>@endif
-          @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}">Galeria</a></li>@endif
-          @if($secoes['sec_contato'] ?? true)<li><a href="{{ route('home') }}#contact">Contato</a></li>@endif
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h4>O Clube</h4>
-        <ul>
-          @if($secoes['sec_por_que_nos'] ?? true)<li><a href="{{ route('home') }}#why">Nossa Missão</a></li>@endif
-          @if($secoes['sec_noticias'] ?? true)<li><a href="{{ route('home') }}#news">Notícias</a></li>@endif
-          @if($secoes['sec_junte_se'] ?? true)<li><a href="{{ route('home') }}#join">Junte-se</a></li>@endif
-          @if($secoes['sec_eventos'] ?? true)<li><a href="{{ route('home') }}#events">Eventos</a></li>@endif
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h4>Contato</h4>
-        <ul>
-          <li>+55 (41) 99999-9999</li>
-          <li>contato@cruzdeossos.com.br</li>
-          <li>Curitiba, PR</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <div class="container footer__bottom-inner">
-        <p>Copyright &copy; {{ date('Y') }} Cruz de Ossos. Todos os direitos reservados.</p>
-        <p>Design por <a href="#">Cruz de Ossos</a></p>
-      </div>
-    </div>
-  </footer>
+  @include('site.partials.footer')
 
 @endsection

@@ -53,6 +53,14 @@ class SiteController extends Controller
             'contato_email' => 'contato@cruzdeossos.com.br',
             'contato_endereco_titulo' => 'Sede da irmandade',
             'contato_endereco' => 'Curitiba, PR — Brasil',
+            'social_facebook' => '',
+            'social_instagram' => '',
+            'social_twitter' => '',
+            'social_youtube' => '',
+            'footer_descricao' => 'Cavaleiros da estrada, irmãos da cruz. Irmandade desde 22/03/2025.',
+            'footer_telefone' => '+55 (41) 99999-9999',
+            'footer_email' => 'contato@cruzdeossos.com.br',
+            'footer_endereco' => 'Curitiba, PR',
         ]);
 
         return view('site.home', compact(
@@ -83,6 +91,14 @@ class SiteController extends Controller
             'galeria_kicker' => 'Momentos',
             'galeria_titulo' => 'Galeria da Irmandade',
             'galeria_subtitulo' => 'Cada foto conta um pedaço da nossa história. Passeios, reuniões e momentos de irmandade.',
+            'social_facebook' => '',
+            'social_instagram' => '',
+            'social_twitter' => '',
+            'social_youtube' => '',
+            'footer_descricao' => 'Cavaleiros da estrada, irmãos da cruz. Irmandade desde 22/03/2025.',
+            'footer_telefone' => '+55 (41) 99999-9999',
+            'footer_email' => 'contato@cruzdeossos.com.br',
+            'footer_endereco' => 'Curitiba, PR',
         ]);
 
         return view('site.galeria', compact('galeria', 'secoes', 'conteudo'));
