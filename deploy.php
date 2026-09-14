@@ -46,7 +46,7 @@ host('2.25.96.11')
 // Tarefas customizadas
 // ---------------------------------------------------------------------------
 
-// Limpa caches antigos e gera novos (Laravel 11 — config:cache funciona)
+// Limpa caches antigos e gera novos (sem config:cache — incompatível com PHP 8.5)
 task('artisan:cache', function () {
     $release = get('release_path');
     within($release, function () {
@@ -55,7 +55,7 @@ task('artisan:cache', function () {
         run('{{bin/php}} artisan route:clear');
         run('{{bin/php}} artisan view:clear');
         run('{{bin/php}} artisan migrate --force');
-        run('{{bin/php}} artisan config:cache');
+        // config:cache removido: quebra com PHP 8.5 (facade root error)
         run('{{bin/php}} artisan route:cache');
         run('{{bin/php}} artisan view:cache');
     });
