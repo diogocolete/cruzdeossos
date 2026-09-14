@@ -101,6 +101,131 @@ Usar **apenas apelido e cargo**. NÃO incluir dados sensíveis dos PDFs (endere�
 - **Iniciar ngrok:** `cd draft && ./start-ngrok.sh`
 - **Painel ngrok:** `http://localhost:4040`
 
+## Desenvolvimento
+
+### Tecnologias em Desenvolvimento
+
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| Laravel | 11 | Framework PHP (aplicação principal) |
+| PHP | 8.3 | Runtime |
+| Filament | 3 | Painel administrativo |
+| Spatie Laravel Permission | 6.25 | Controle de papéis e permissões |
+| Intervention Image | 4.3 | Processamento de imagens (uploads) |
+| MySQL | 8.0 | Banco de dados |
+| Apache | 2.4 | Servidor web |
+| WSL2 | — | Ambiente Linux dentro do Windows |
+| Certificado SSL autoassinado | — | Para HTTPS local (`cruzdeossos.dev`) |
+
+### Ambiente Local
+
+| Item | Valor |
+|------|-------|
+| Plataforma | WSL2 (Ubuntu) no Windows |
+| Diretório do projeto | `/var/www/html/cruzdeossos/sistema` |
+| Document root do Apache | `/var/www/html/cruzdeossos/sistema/public` |
+| APP_ENV | `local` |
+| APP_DEBUG | `true` |
+| APP_URL | `https://cruzdeossos.dev` |
+| DB_CONNECTION | `mysql` |
+| DB_HOST | `127.0.0.1` |
+| DB_DATABASE | `cruz_de_ossos` |
+| FILESYSTEM_DISK | `local` |
+| SESSION_DRIVER | `database` |
+| QUEUE_CONNECTION | `database` |
+| CACHE_STORE | `database` |
+
+### Domínio Local
+
+| Domínio | Status |
+|--------|--------|
+| `https://cruzdeossos.dev` | Ativo (SSL autoassinado) |
+
+O domínio `cruzdeossos.dev` é resolvido localmente via configuração do Apache (`/etc/apache2/sites-available/cruzdeossos.dev.conf`) com certificado SSL autoassinado em `/etc/apache2/ssl/cruzdeossos.dev.{crt,key}`.
+
+### Painel Administrativo Local
+
+| Item | Valor |
+|------|-------|
+| URL | `https://cruzdeossos.dev/admin` |
+| Usuário admin | `admin@cruzdeossos.com.br` |
+| Senha | `cruzdeossos2025` (ambiente local — alterar em produção) |
+
+### Comandos úteis no Desenvolvimento
+
+```bash
+# Entrar no diretório do projeto
+cd /var/www/html/cruzdeossos/sistema
+
+# Servir a aplicação (alternativa ao Apache)
+php artisan serve
+
+# Rodar migrations
+php artisan migrate
+
+# Rodar seeders
+php artisan db:seed
+
+# Limpar caches
+php artisan optimize:clear
+
+# Criar storage link (symlink public/storage -> storage/app/public)
+php artisan storage:link
+
+# Rodar testes
+php artisan test
+
+# Tinker (REPL do Laravel)
+php artisan tinker
+```
+
+### Estrutura de Diretórios Local
+
+```
+/var/www/html/cruzdeossos/
+├── arquivos/                       # assets originais (imagens, fonte, PDFs)
+│   └── integrantes/                # fotos e fichas dos integrantes
+├── draft/                         # esboço do site (HTML/CSS/JS estático)
+│   ├── assets/                     # assets copiados para o draft
+│   ├── css/style.css               # estilos do esboço
+│   ├── js/main.js                  # scripts do esboço
+│   └── index.html                  # página principal do esboço
+├── sistema/                        # aplicação Laravel (repositório git)
+│   ├── app/                        # código da aplicação
+│   │   ├── Filament/               # resources e pages do painel admin
+│   │   ├── Http/Controllers/        # controllers (SiteController, etc.)
+│   │   ├── Livewire/               # componentes Livewire
+│   │   └── Models/                 # modelos Eloquent
+│   ├── resources/views/site/       # views Blade do site público
+│   ├── public/css/style.css        # CSS do site em produção
+│   ├── public/js/main.js           # JS do site em produção
+│   ├── storage/app/public/galeria/ # 477 fotos da galeria
+│   ├── storage/app/public/integrantes/  # fotos dos integrantes
+│   ├── .env                        # configurações locais (NÃO commitado)
+│   └── AGENTS.md                   # este arquivo
+└── AGENTS.md                        # cópia na raiz do projeto
+```
+
+### Repositório Git
+
+| Item | Valor |
+|------|-------|
+| URL | `https://github.com/diogocolete/cruzdeossos` |
+| Branch principal | `main` |
+| Diretório do repo | `/var/www/html/cruzdeossos/sistema` |
+
+### Diferenças entre Local e Produção
+
+| Item | Desenvolvimento | Produção |
+|------|-----------------|----------|
+| APP_ENV | `local` | `production` |
+| APP_DEBUG | `true` | `false` |
+| APP_URL | `https://cruzdeossos.dev` | `https://www.cruzdeossos.com.br` |
+| FILESYSTEM_DISK | `local` | `public` |
+| SSL | Autoassinado | Let's Encrypt |
+| Deploy | Manual (`git push`) | Webhook automático |
+| Cache | Database | Arquivo (`config:cache`, `route:cache`) |
+
 ## Produção
 
 ### Tecnologias em Produção
