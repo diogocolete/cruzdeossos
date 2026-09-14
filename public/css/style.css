@@ -385,7 +385,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transition: transform .35s var(--ease);
 }
 .gallery__item::after {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(to top, rgba(12,9,7,.85), transparent 60%);
   transition: opacity .35s var(--ease);
 }
