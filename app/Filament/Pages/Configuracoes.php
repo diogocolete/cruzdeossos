@@ -66,8 +66,8 @@ class Configuracoes extends Page
                         Forms\Components\Toggle::make('manutencao_ativa')
                             ->label('Site em manutenção')
                             ->helperText('Visitantes verão a página de manutenção. O painel admin continua acessível.')
-                            ->onColor('danger')
-                            ->offColor('success'),
+                            ->onColor('success')
+                            ->offColor('danger'),
                     ])
                     ->icon('heroicon-o-wrench-screwdriver'),
 
