@@ -373,17 +373,7 @@ ls -la /var/www/html/cruzdeossos/releases/
 | Chave | Acesso | Uso |
 |-------|--------|-----|
 | `~/.ssh/colete_hostinger` | root@2.25.96.11 e deploy@2.25.96.11 | Deployer + admin VPS |
-| `~/.ssh/wolf` | root@vps66629.publiccloud.com.br | Locaweb (deprecated) |
 | `/home/deploy/.ssh/github_cruzdeossos` (na VPS) | github.com | git pull na VPS (deploy key do repo) |
-
-## Servidor anterior: Locaweb (DEPRECATED)
-
-- **Host**: `vps66629.publiccloud.com.br`
-- **IP**: `191.252.103.193`
-- **Path**: `/var/www/html/cruzdeossos` (deploy direto via git pull, sem releases)
-- **PHP**: 8.3 | **MySQL**: 8.0
-- **Status**: ainda ativo, mas o DNS já aponta para Hostinger. Cancelar quando confirmado que tudo está estável na Hostinger.
-- **Deploy antigo**: GitHub Webhook (`webhook-deploy.php` + `deploy.sh`) — substituído pelo Deployer.org
 
 ## Referência de Design
 
