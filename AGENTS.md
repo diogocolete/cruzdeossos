@@ -222,9 +222,9 @@ php artisan tinker
 | APP_DEBUG | `true` | `false` |
 | APP_URL | `https://cruzdeossos.dev` | `https://www.cruzdeossos.com.br` |
 | FILESYSTEM_DISK | `local` | `public` |
-| SSL | Autoassinado | Let's Encrypt |
-| Deploy | Manual (`git push`) | Webhook automático |
-| Cache | Database | Arquivo (`config:cache`, `route:cache`) |
+| SSL | Autoassinado | Cloudflare Origin Certificate (válido até 2041) |
+| Deploy | Manual (`git push`) | Deployer.org (local, via SSH) |
+| Cache | Database | Arquivo (`route:cache`, `view:cache`) |
 
 ## Produção
 
@@ -233,36 +233,68 @@ php artisan tinker
 | Tecnologia | Versão | Uso |
 |------------|--------|-----|
 | Laravel | 11 | Framework PHP (aplicação principal) |
-| PHP | 8.3 | Runtime |
+| PHP | 8.5 | Runtime |
 | Filament | 3 | Painel administrativo |
 | Spatie Laravel Permission | — | Controle de papéis e permissões |
 | Intervention Image | — | Processamento de imagens (uploads) |
-| MySQL/MariaDB | — | Banco de dados |
-| Apache | 2 | Servidor web |
-| Let's Encrypt / Certbot | — | Certificado SSL |
-| Cloudflare | — | DNS e proxy (modo Full) |
-| GitHub Webhook | — | Deploy automático (gratuito) |
+| MySQL | 8.4 | Banco de dados |
+| Apache | 2.4 | Servidor web |
+| Cloudflare Origin Certificate | — | Certificado SSL (válido até 2041) |
+| Cloudflare | — | DNS e proxy (modo Full Strict) |
+| Deployer.org | 6.8 | Deploy via SSH com releases e rollback |
 
-### Acesso ao Servidor (VPS)
+### Servidor: Hostinger VPS
 
 | Item | Valor |
 |------|-------|
-| Hostname | `vps66629.publiccloud.com.br` |
-| IP | `191.252.103.193` |
-| Usuário SSH | `deploy` |
-| Usuário root | `root` |
-| Caminho do projeto | `/var/www/html/cruzdeossos` |
-| Document root do Apache | `/var/www/html/cruzdeossos/public` |
-| Grupo web | `www-data` |
+| IP | `2.25.96.11` |
+| OS | Ubuntu 26.04.1 LTS |
+| Usuário SSH | `deploy` (grupo www-data) |
+| Acesso SSH local | `ssh -i ~/.ssh/colete_hostinger deploy@2.25.96.11` |
+| Deploy path | `/var/www/html/cruzdeossos` |
+| Document root do Apache | `/var/www/html/cruzdeossos/current/public/` |
 
 **Credenciais:** As senhas de SSH e banco de dados NÃO estão neste arquivo (evitar commit de segredos). Consulte o administrador do sistema ou o gerenciador de senhas da equipe.
+
+### Estrutura de deploy (Deployer)
+
+```
+/var/www/html/cruzdeossos/
+├── current -> releases/N    # symlink para release ativo
+├── releases/                 # releases históricos (rollback)
+│   ├── 1/
+│   └── 2/
+├── shared/                   # persistido entre releases
+│   ├── .env                  # config de produção (NÃO sobrescrever)
+│   └── storage/              # storage do Laravel (sessions, logs, uploads)
+│       └── app/public/
+│           ├── galeria/      # 477 fotos da galeria
+│           ├── integrantes/  # fotos dos integrantes
+│           └── banners/      # imagens de banners
+└── .dep/                     # estado do Deployer
+```
 
 ### Domínios
 
 | Domínio | Status |
 |--------|--------|
-| `https://cruzdeossos.com.br` | Ativo (SSL Let's Encrypt) |
-| `https://www.cruzdeossos.com.br` | Ativo (SSL Let's Encrypt) |
+| `https://cruzdeossos.com.br` | Ativo (Cloudflare Origin Certificate) |
+| `https://www.cruzdeossos.com.br` | Ativo (Cloudflare Origin Certificate) |
+
+### Apache vhost
+
+- Config: `/etc/apache2/sites-available/cruzdeossos.com.br.conf`
+- DocumentRoot: `/var/www/html/cruzdeossos/current/public/`
+- Porta 80: redirect 301 para HTTPS
+- Porta 443: SSL com Cloudflare Origin Certificate
+  - Cert: `/etc/ssl/cloudflare/cruzdeossos.pem`
+  - Key: `/etc/ssl/cloudflare/cruzdeossos.key`
+
+### Banco de dados
+
+- **DB**: `cruzdeossos` (MySQL, localhost)
+- **Usuário**: `cruzdeossos`
+- **Senha**: ver arquivo `/root/.cruzdeossos_db_pw` na VPS
 
 ### Painel Administrativo
 
@@ -272,33 +304,56 @@ php artisan tinker
 | Usuário admin | `admin@cruzdeossos.com.br` |
 | Senha | Consulte o administrador (não commitada) |
 
-### Deploy
+### Deploy com Deployer.org
 
-O deploy é automático via **GitHub Webhook** (gratuito, sem GitHub Actions):
+#### Pré-requisitos (máquina local)
 
-1. `git push origin main` no repositório `https://github.com/diogocolete/cruzdeossos`
-2. GitHub envia webhook para `https://cruzdeossos.com.br/webhook-deploy.php`
-3. O webhook valida a assinatura HMAC e executa `deploy.sh`
-4. `deploy.sh` roda: `git pull` → `composer install` → `migrate --force` → limpa caches → recria caches → ajusta permissões → `sudo systemctl reload apache2`
+- PHP CLI instalado
+- `deployer.phar` na raiz do repo (baixar se faltar: `curl -LO https://deployer.org/deployer.phar && chmod +x deployer.phar`)
+- Chave SSH `~/.ssh/colete_hostinger` com acesso ao usuário `deploy` na VPS
+
+#### Comandos (rodar na raiz do repo)
+
+```bash
+# Deploy (faz git pull, composer install, cache, permissões, symlink, apache reload)
+php deployer.phar deploy production
+
+# Voltar para release anterior
+php deployer.phar rollback production
+
+# Ver releases disponíveis
+php deployer.phar current production
+php deployer.phar releases production
+
+# Verbose
+php deployer.phar deploy production -v
+```
+
+#### O que o deploy faz (pipeline)
+
+1. `deploy:prepare` — cria dirs releases/, shared/, .dep/
+2. `deploy:lock` — bloqueia deploy concorrente
+3. `deploy:release` — prepara novo release
+4. `deploy:update_code` — git clone na VPS
+5. `deploy:shared` — symlink .env e storage do shared
+6. `deploy:vendors` — composer install
+7. `artisan:cache` — clear + migrate + route:cache + view:cache (sem config:cache!)
+8. `artisan:storage:link` — cria symlink public/storage
+9. `permissions:set` — chown/chmod storage e bootstrap/cache
+10. `deploy:symlink` — atualiza symlink current
+11. `deploy:unlock` — libera lock
+12. `apache:reload` — recarrega Apache
+
+> **Importante:** NÃO usar `config:cache` — incompatível com PHP 8.5 (erro "A facade root has not been set").
 
 ### Comandos úteis na VPS
 
 ```bash
 # Conectar via SSH
-ssh deploy@vps66629.publiccloud.com.br
+ssh -i ~/.ssh/colete_hostinger deploy@2.25.96.11
 
-# Entrar no diretório do projeto
-cd /var/www/html/cruzdeossos
-
-# Deploy manual (se o webhook falhar)
-git pull origin main
-composer install --no-dev --optimize-autoloader
-php artisan migrate --force
-php artisan cache:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear
-php artisan config:cache && php artisan route:cache && php artisan view:cache
-chown -R deploy:www-data storage bootstrap/cache
-chmod -R 775 storage bootstrap/cache
-sudo systemctl reload apache2
+# Entrar no diretório do release atual
+cd /var/www/html/cruzdeossos/current
 
 # Colocar site em manutenção
 php artisan down
@@ -308,19 +363,27 @@ php artisan up
 
 # Limpar caches
 php artisan optimize:clear
+
+# Ver releases
+ls -la /var/www/html/cruzdeossos/releases/
 ```
 
-### Estrutura de Diretórios na VPS
+### Chaves SSH
 
-```
-/var/www/html/cruzdeossos/        # raiz do projeto Laravel
-├── public/                       # document root do Apache
-├── storage/app/public/galeria/   # fotos da galeria (477 imagens)
-├── storage/app/public/integrantes/  # fotos dos integrantes
-├── .env                          # configurações de produção (NÃO commitado)
-├── webhook-deploy.php            # receiver do webhook do GitHub
-└── deploy.sh                     # script de deploy
-```
+| Chave | Acesso | Uso |
+|-------|--------|-----|
+| `~/.ssh/colete_hostinger` | root@2.25.96.11 e deploy@2.25.96.11 | Deployer + admin VPS |
+| `~/.ssh/wolf` | root@vps66629.publiccloud.com.br | Locaweb (deprecated) |
+| `/home/deploy/.ssh/github_cruzdeossos` (na VPS) | github.com | git pull na VPS (deploy key do repo) |
+
+## Servidor anterior: Locaweb (DEPRECATED)
+
+- **Host**: `vps66629.publiccloud.com.br`
+- **IP**: `191.252.103.193`
+- **Path**: `/var/www/html/cruzdeossos` (deploy direto via git pull, sem releases)
+- **PHP**: 8.3 | **MySQL**: 8.0
+- **Status**: ainda ativo, mas o DNS já aponta para Hostinger. Cancelar quando confirmado que tudo está estável na Hostinger.
+- **Deploy antigo**: GitHub Webhook (`webhook-deploy.php` + `deploy.sh`) — substituído pelo Deployer.org
 
 ## Referência de Design
 
