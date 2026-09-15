@@ -35,7 +35,7 @@
       <ul>
         @if($secoes['sec_por_que_nos'] ?? true)<li><a href="{{ $homeUrl }}#why">Nossa Missão</a></li>@endif
         @if($secoes['sec_noticias'] ?? true)<li><a href="{{ $homeUrl }}#news">Notícias</a></li>@endif
-        @if($secoes['sec_junte_se'] ?? true)<li><a href="{{ $homeUrl }}#join">Junte-se</a></li>@endif
+        @if($secoes['sec_junte_se'] ?? true)<li><a href="{{ route('junte-se') }}">Junte-se</a></li>@endif
         @if($secoes['sec_eventos'] ?? true)<li><a href="{{ $homeUrl }}#events">Eventos</a></li>@endif
       </ul>
     </div>

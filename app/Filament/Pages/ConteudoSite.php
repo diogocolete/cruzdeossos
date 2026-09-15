@@ -56,9 +56,11 @@ class ConteudoSite extends Page
             'cta_imagem' => ['label' => 'CTA — Imagem de fundo', 'tipo' => 'upload', 'default' => 'banners/banner-5-esboco.png', 'section' => 'CTA Banner'],
 
             // JUNTE-SE
-            'junte_se_kicker' => ['label' => 'Junte-se — Kicker', 'tipo' => 'text', 'default' => 'Faça parte', 'section' => 'Junte-se / Newsletter'],
-            'junte_se_titulo' => ['label' => 'Junte-se — Título', 'tipo' => 'text', 'default' => 'Junte-se ao clube', 'section' => 'Junte-se / Newsletter'],
-            'junte_se_texto' => ['label' => 'Junte-se — Texto', 'tipo' => 'textarea', 'default' => 'membros e a família continua crescendo! Inscreva-se para receber novidades, eventos e passeios.', 'section' => 'Junte-se / Newsletter'],
+            'junte_se_kicker' => ['label' => 'Junte-se — Kicker', 'tipo' => 'text', 'default' => 'Faça parte', 'section' => 'Junte-se ao Clube'],
+            'junte_se_titulo' => ['label' => 'Junte-se — Título', 'tipo' => 'text', 'default' => 'Junte-se ao clube', 'section' => 'Junte-se ao Clube'],
+            'junte_se_texto' => ['label' => 'Junte-se — Texto', 'tipo' => 'textarea', 'default' => 'A Cruz de Ossos é uma irmandade de estrada construída sobre lealdade, respeito e família. Quem quer entrar começa rodando conosco nos passeios como Ride — sem colete — para conhecer o grupo e mostrar compromisso. Preencha o formulário e a diretoria entrará em contato para apresentar a irmandade e combinar o primeiro encontro.', 'section' => 'Junte-se ao Clube'],
+            'junte_se_btn' => ['label' => 'Junte-se — Texto do botão', 'tipo' => 'text', 'default' => 'Enviar inscrição', 'section' => 'Junte-se ao Clube'],
+            'junte_se_imagem' => ['label' => 'Junte-se — Imagem', 'tipo' => 'upload', 'default' => 'junte-se/junte-se-moto.jpg', 'section' => 'Junte-se ao Clube', 'dir' => 'junte-se'],
 
             // CONTATO
             'contato_titulo' => ['label' => 'Contato — Título', 'tipo' => 'text', 'default' => 'Tem dúvidas? Não espere, vamos conversar', 'section' => 'Contato'],
@@ -103,7 +105,7 @@ class ConteudoSite extends Page
                         ->label($config['label'])
                         ->image()
                         ->disk('public')
-                        ->directory('cta')
+                        ->directory($config['dir'] ?? 'cta')
                         ->default($config['default']);
                 } else {
                     $componentes[] = Forms\Components\TextInput::make($chave)

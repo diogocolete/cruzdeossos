@@ -19,7 +19,7 @@
         @if($secoes['sec_contato'] ?? true)<li><a href="{{ route('home') }}#contact">Contato</a></li>@endif
       </ul>
     </nav>
-    @if($secoes['sec_junte_se'] ?? true)<a href="{{ route('home') }}#join" class="btn btn--primary header__cta">Junte-se ao Clube</a>@endif
+    @if($secoes['sec_junte_se'] ?? true)<a href="{{ route('junte-se') }}" class="btn btn--primary header__cta">Junte-se ao Clube</a>@endif
     <button class="nav__toggle" id="navToggle" aria-label="Abrir menu">
       <span></span><span></span><span></span>
     </button>

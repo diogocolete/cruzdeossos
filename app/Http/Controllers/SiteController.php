@@ -150,11 +150,32 @@ class SiteController extends Controller
         return view('site.posts.show', compact('post', 'secoes', 'conteudo', 'outrosPosts'));
     }
 
+    public function junteSe()
+    {
+        if (!Configuracao::secaoAtiva('sec_junte_se')) {
+            return redirect()->route('home');
+        }
+
+        $secoes = Configuracao::secoes();
+        $evolucaoPassos = EvolucaoPasso::publicados()->get();
+        $conteudo = $this->conteudoInterno([
+            'junte_se_kicker' => 'Faça parte',
+            'junte_se_titulo' => 'Junte-se ao clube',
+            'junte_se_texto' => '',
+            'junte_se_imagem' => 'junte-se/junte-se-moto.jpg',
+            'junte_se_btn' => 'Enviar inscrição',
+            'evolucao_kicker' => 'Faça parte da família',
+            'evolucao_titulo' => 'Evolução na Irmandade',
+        ]);
+
+        return view('site.junte-se', compact('secoes', 'conteudo', 'evolucaoPassos'));
+    }
+
     public function inscricao(Request $request)
     {
         // Honeypot: bots preenchem; humanos nunca veem o campo
         if ($request->filled('website')) {
-            return redirect(route('home') . '#join')
+            return redirect()->route('junte-se')
                 ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
         }
 
@@ -171,7 +192,7 @@ class SiteController extends Controller
             'nome_completo', 'rede_social', 'email', 'telefone', 'whatsapp', 'endereco',
         ]));
 
-        return redirect(route('home') . '#join')
+        return redirect()->route('junte-se')
             ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
     }
 

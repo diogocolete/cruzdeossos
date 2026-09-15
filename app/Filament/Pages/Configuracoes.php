@@ -32,7 +32,7 @@ class Configuracoes extends Page
         'sec_posts'        => 'Posts em Destaque',
         'sec_noticias'     => 'Notícias',
         'sec_depoimentos'  => 'Depoimentos',
-        'sec_junte_se'     => 'Junte-se / Newsletter',
+        'sec_junte_se'     => 'Junte-se (página dedicada)',
         'sec_contato'      => 'Contato',
     ];
 

@@ -10,6 +10,7 @@ Route::get('/galeria', [SiteController::class, 'galeria'])->name('galeria');
 Route::get('/posts', [SiteController::class, 'posts'])->name('posts.index');
 Route::get('/posts/{slug}', [SiteController::class, 'postShow'])->name('posts.show');
 Route::get('/integrantes/{slug}', [SiteController::class, 'integranteShow'])->name('integrantes.show');
+Route::get('/junte-se', [SiteController::class, 'junteSe'])->name('junte-se');
 Route::post('/junte-se', [SiteController::class, 'inscricao'])
     ->name('junte-se.store')
     ->middleware('throttle:5,1');

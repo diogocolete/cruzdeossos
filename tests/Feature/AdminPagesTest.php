@@ -67,6 +67,9 @@ class AdminPagesTest extends TestCase
 
     public function test_formulario_junte_se(): void
     {
+        // página dedicada
+        $this->get('/junte-se')->assertOk();
+
         $this->post(route('junte-se.store'), [
             'nome_completo' => 'Candidato Teste',
             'rede_social' => '@candidato',
