@@ -23,6 +23,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'email',
+        'integrante_id',
         'password',
     ];
 
@@ -47,6 +48,20 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function integrante()
+    {
+        return $this->belongsTo(Integrante::class);
+    }
+
+    /**
+     * Diretoria: Presidente e Secretário têm acesso total às fichas
+     * e podem destacar posts na home.
+     */
+    public function isDiretoria(): bool
+    {
+        return $this->hasAnyRole(['Presidente', 'Secretário']);
     }
 
     public function canAccessPanel(Panel $panel): bool

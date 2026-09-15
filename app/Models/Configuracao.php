@@ -59,7 +59,7 @@ class Configuracao extends Model
     {
         $secoes = [
             'sec_sobre', 'sec_eventos', 'sec_por_que_nos', 'sec_evolucao',
-            'sec_cta', 'sec_galeria', 'sec_integrantes', 'sec_noticias',
+            'sec_cta', 'sec_galeria', 'sec_integrantes', 'sec_posts', 'sec_noticias',
             'sec_depoimentos', 'sec_junte_se', 'sec_contato',
         ];
 

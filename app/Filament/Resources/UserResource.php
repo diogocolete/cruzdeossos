@@ -57,6 +57,11 @@ class UserResource extends Resource
                             ->multiple()
                             ->options(Role::all()->pluck('name', 'id'))
                             ->helperText('Selecione o papel do usuário. Presidente tem acesso total.'),
+                        Forms\Components\Select::make('integrante_id')
+                            ->label('Integrante vinculado')
+                            ->relationship('integrante', 'apelido')
+                            ->searchable()
+                            ->helperText('Vincula o login do admin a um integrante — define a autoria de posts, o perfil público e o acesso à ficha.'),
                     ]),
             ]);
     }

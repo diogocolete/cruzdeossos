@@ -32,6 +32,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->brandLogo(fn () => view('filament.brand-logo'))
             ->brandName('Cruz de Ossos')
+            ->userMenuItems([
+                'site' => \Filament\Navigation\MenuItem::make()
+                    ->label('Ver site público')
+                    ->url(fn () => route('home'))
+                    ->icon('heroicon-o-globe-alt')
+                    ->openUrlInNewTab(),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

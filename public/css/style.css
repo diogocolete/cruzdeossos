@@ -685,3 +685,119 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .hero__actions .btn { padding: 13px 24px; font-size: 12px; }
   .container { padding: 0 18px; }
 }
+
+/* ===== POSTS (blog da irmandade) ===== */
+.news__img { display: block; position: relative; }
+.news__badge {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--red); color: var(--white);
+  font-family: var(--font-head); font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 3px;
+}
+.news__autor { color: var(--red); }
+.news__autor:hover { color: var(--white); }
+.news__body h3 a:hover { color: var(--red); }
+.news--full { padding: 70px 0 100px; }
+
+.posts__pagination { margin-top: 50px; display: flex; justify-content: center; }
+.pagination { display: flex; gap: 8px; list-style: none; }
+.page-item .page-link {
+  display: inline-block; padding: 8px 16px;
+  font-family: var(--font-head); font-size: 14px;
+  color: var(--cream); background: var(--leather-2);
+  border: 1px solid var(--leather-3); border-radius: 3px;
+  transition: all .25s var(--ease);
+}
+.page-item .page-link:hover { background: var(--red); border-color: var(--red); color: var(--white); }
+.page-item.active .page-link { background: var(--red); border-color: var(--red); color: var(--white); }
+.page-item.disabled .page-link { opacity: .35; pointer-events: none; }
+
+/* ===== POST — página individual ===== */
+.post { padding: 150px 0 80px; background: var(--leather); }
+.post__container { max-width: 800px; }
+.post__title {
+  font-family: var(--font-head); font-size: clamp(2rem, 4.5vw, 3rem);
+  text-transform: uppercase; color: var(--white); line-height: 1.15; margin: 16px 0 24px;
+}
+.post__meta {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding-bottom: 28px; margin-bottom: 34px;
+  border-bottom: 1px solid var(--leather-3);
+}
+.post__autor {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-head); font-size: 16px; font-weight: 600;
+  color: var(--red); text-transform: uppercase; letter-spacing: 1px;
+}
+.post__autor:hover { color: var(--white); }
+.post__autor-foto {
+  width: 42px; height: 42px; border-radius: 50%;
+  background-size: cover; background-position: center top;
+  border: 2px solid var(--red);
+}
+.post__data { font-size: 13px; color: var(--cream-dim); text-transform: uppercase; letter-spacing: 1px; }
+.post__imagem { margin-bottom: 34px; border-radius: 4px; overflow: hidden; }
+.post__imagem img { width: 100%; }
+.post__video { margin-bottom: 34px; border-radius: 4px; overflow: hidden; background: var(--black); }
+.post__video iframe, .post__video video { width: 100%; aspect-ratio: 16/9; display: block; }
+.post__conteudo { font-size: 17px; color: var(--cream); line-height: 1.8; }
+.post__conteudo p { margin-bottom: 20px; }
+.post__conteudo h2, .post__conteudo h3 {
+  font-family: var(--font-head); color: var(--white);
+  text-transform: uppercase; margin: 34px 0 16px;
+}
+.post__conteudo ul, .post__conteudo ol { margin: 0 0 20px 26px; }
+.post__conteudo li { margin-bottom: 8px; }
+.post__conteudo a { color: var(--red); text-decoration: underline; }
+.post__conteudo blockquote {
+  border-left: 3px solid var(--red); padding: 8px 0 8px 20px;
+  margin: 0 0 20px; color: var(--cream-dim); font-style: italic;
+}
+.post__conteudo img { border-radius: 4px; }
+.post__autor-card {
+  margin-top: 50px; padding: 28px;
+  display: flex; gap: 22px; align-items: flex-start;
+  background: var(--leather-2); border-radius: 4px;
+  border-left: 3px solid var(--red);
+}
+.post__autor-card-foto {
+  flex: 0 0 90px; width: 90px; height: 110px;
+  background-size: cover; background-position: center top;
+  border-radius: 4px; border: 2px solid var(--leather-3);
+}
+.post__autor-card h3 { font-family: var(--font-head); font-size: 20px; margin-bottom: 4px; }
+.post__autor-card h3 a { color: var(--white); }
+.post__autor-card h3 a:hover { color: var(--red); }
+.post__autor-card p { font-size: 14px; color: var(--cream-dim); margin-top: 10px; }
+
+/* ===== MEMBER — página pública do integrante ===== */
+.member { padding: 150px 0 60px; background: linear-gradient(rgba(12,9,7,.93), rgba(12,9,7,.97)), url('../assets/couro2-background.png'); background-size: cover; }
+.member__card {
+  display: flex; gap: 44px; align-items: flex-start;
+  background: rgba(26,20,17,.85); border: 1px solid var(--leather-3);
+  border-radius: 6px; padding: 44px;
+}
+.member__foto {
+  flex: 0 0 260px; height: 340px;
+  background-size: cover; background-position: center top;
+  border-radius: 6px; border: 3px solid var(--red);
+}
+.member__nome {
+  font-family: var(--font-display), 'Oswald', Impact, sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.4rem); text-transform: uppercase;
+  color: var(--white); line-height: 1; margin: 14px 0 10px;
+}
+.member__cargo {
+  display: inline-block; font-family: var(--font-head);
+  font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--red); border: 1px solid var(--red); border-radius: 3px;
+  padding: 5px 14px; margin-bottom: 22px;
+}
+.member__bio { font-size: 16px; color: var(--cream-dim); line-height: 1.8; max-width: 560px; }
+
+@media (max-width: 768px) {
+  .member__card { flex-direction: column; padding: 28px; }
+  .member__foto { width: 100%; flex: none; height: 300px; }
+  .post__autor-card { flex-direction: column; }
+}

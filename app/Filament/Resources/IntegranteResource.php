@@ -25,7 +25,13 @@ class IntegranteResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('apelido')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(100)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn ($state, Forms\Set $set) => $set('slug', str($state)->slug())),
+                Forms\Components\TextInput::make('slug')
+                    ->maxLength(100)
+                    ->unique(ignoreRecord: true)
+                    ->helperText('URL da página pública: /integrantes/{slug}'),
                 Forms\Components\Select::make('cargo')
                     ->options([
                         'Presidente' => 'Presidente',
@@ -41,6 +47,11 @@ class IntegranteResource extends Resource
                     ->directory('integrantes')
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('3:4'),
+                Forms\Components\Textarea::make('bio')
+                    ->label('Bio')
+                    ->rows(4)
+                    ->maxLength(2000)
+                    ->columnSpanFull(),
                 Forms\Components\Toggle::make('ativo')
                     ->default(true),
                 Forms\Components\TextInput::make('ordem')

@@ -9,6 +9,7 @@ use App\Models\Galeria;
 use App\Models\Depoimento;
 use App\Models\Banner;
 use App\Models\Beneficio;
+use App\Models\Post;
 use App\Models\Recurso;
 use App\Models\EvolucaoPasso;
 use App\Models\Configuracao;
@@ -23,6 +24,7 @@ class SiteController extends Controller
         $integrantes = Integrante::ativos()->get();
         $eventos = Evento::ordenados()->get();
         $noticias = Noticia::publicados()->limit(3)->get();
+        $postsDestaque = Post::paraHome(6);
         $galeria = Galeria::publicados()->limit(6)->get();
         $depoimentos = Depoimento::publicados()->get();
         $beneficios = Beneficio::publicados()->get();
@@ -68,6 +70,7 @@ class SiteController extends Controller
             'integrantes',
             'eventos',
             'noticias',
+            'postsDestaque',
             'galeria',
             'depoimentos',
             'beneficios',
@@ -102,5 +105,67 @@ class SiteController extends Controller
         ]);
 
         return view('site.galeria', compact('galeria', 'secoes', 'conteudo'));
+    }
+
+    /**
+     * Chaves de conteúdo comuns às páginas públicas internas.
+     */
+    private function conteudoInterno(array $extras = []): array
+    {
+        return Conteudo::muitos(array_merge([
+            'social_facebook' => '',
+            'social_instagram' => '',
+            'social_twitter' => '',
+            'social_youtube' => '',
+            'footer_descricao' => 'Cavaleiros da estrada, irmãos da cruz. Irmandade desde 22/03/2025.',
+            'footer_telefone' => '+55 (41) 99999-9999',
+            'footer_email' => 'contato@cruzdeossos.com.br',
+            'footer_endereco' => 'Curitiba, PR',
+        ], $extras));
+    }
+
+    public function posts()
+    {
+        $posts = Post::publicados()->with('integrante')->paginate(9);
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno([
+            'posts_kicker' => 'Blog da irmandade',
+            'posts_titulo' => 'Posts',
+            'posts_subtitulo' => 'Histórias, passeios e novidades escritos pelos próprios irmãos.',
+        ]);
+
+        return view('site.posts.index', compact('posts', 'secoes', 'conteudo'));
+    }
+
+    public function postShow(string $slug)
+    {
+        $post = Post::publicados()->with('integrante')->where('slug', $slug)->firstOrFail();
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno();
+        $outrosPosts = Post::publicados()
+            ->where('id', '!=', $post->id)
+            ->limit(3)
+            ->get();
+
+        return view('site.posts.show', compact('post', 'secoes', 'conteudo', 'outrosPosts'));
+    }
+
+    public function integranteShow(string $slug)
+    {
+        $integrante = Integrante::ativos()
+            ->where('slug', $slug)
+            ->first();
+
+        // Fallback: slug gerado a partir do apelido (integrantes sem slug definido)
+        $integrante ??= Integrante::ativos()->get()
+            ->first(fn ($i) => $i->slugPublico() === $slug);
+
+        abort_unless($integrante, 404);
+
+        $posts = $integrante->posts()->publicados()->get();
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno();
+
+        return view('site.integrantes.show', compact('integrante', 'posts', 'secoes', 'conteudo'));
     }
 }

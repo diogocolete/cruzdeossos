@@ -29,10 +29,21 @@ class Configuracoes extends Page
         'sec_cta'          => 'Banner CTA',
         'sec_galeria'      => 'Galeria',
         'sec_integrantes'  => 'Integrantes',
+        'sec_posts'        => 'Posts em Destaque',
         'sec_noticias'     => 'Notícias',
         'sec_depoimentos'  => 'Depoimentos',
         'sec_junte_se'     => 'Junte-se / Newsletter',
         'sec_contato'      => 'Contato',
+    ];
+
+    /** Campos das integrações de redes sociais (chave => label) */
+    public static array $integracoes = [
+        'int_facebook_ativo'        => 'Facebook ativo',
+        'int_facebook_page_id'      => 'Facebook — ID da Página',
+        'int_facebook_token'        => 'Facebook — Token de acesso',
+        'int_instagram_ativo'       => 'Instagram ativo',
+        'int_instagram_account_id'  => 'Instagram — ID da conta (IG Business)',
+        'int_instagram_token'       => 'Instagram — Token de acesso',
     ];
 
     public function mount(): void
@@ -43,6 +54,11 @@ class Configuracoes extends Page
 
         foreach (array_keys(self::$secoes) as $chave) {
             $dados[$chave] = Configuracao::get($chave, '1') === '1';
+        }
+
+        foreach (array_keys(self::$integracoes) as $chave) {
+            $valor = Configuracao::get($chave, '');
+            $dados[$chave] = str_ends_with($chave, '_ativo') ? $valor === '1' : $valor;
         }
 
         $this->form->fill($dados);
@@ -76,6 +92,38 @@ class Configuracoes extends Page
                     ->schema($toggles)
                     ->columns(2)
                     ->icon('heroicon-o-rectangle-stack'),
+
+                Forms\Components\Section::make('Integrações — Redes Sociais')
+                    ->description('Controla o envio automático de posts para as redes. Um post só é compartilhado se a integração estiver ativa E configurada. Sem configuração, o compartilhamento fica registrado como "desativado" no log do post.')
+                    ->schema([
+                        Forms\Components\Toggle::make('int_facebook_ativo')
+                            ->label(self::$integracoes['int_facebook_ativo'])
+                            ->onColor('success')
+                            ->offColor('danger'),
+                        Forms\Components\Toggle::make('int_instagram_ativo')
+                            ->label(self::$integracoes['int_instagram_ativo'])
+                            ->onColor('success')
+                            ->offColor('danger'),
+                        Forms\Components\TextInput::make('int_facebook_page_id')
+                            ->label(self::$integracoes['int_facebook_page_id'])
+                            ->maxLength(100),
+                        Forms\Components\TextInput::make('int_instagram_account_id')
+                            ->label(self::$integracoes['int_instagram_account_id'])
+                            ->maxLength(100),
+                        Forms\Components\TextInput::make('int_facebook_token')
+                            ->label(self::$integracoes['int_facebook_token'])
+                            ->password()
+                            ->revealable()
+                            ->maxLength(500),
+                        Forms\Components\TextInput::make('int_instagram_token')
+                            ->label(self::$integracoes['int_instagram_token'])
+                            ->password()
+                            ->revealable()
+                            ->maxLength(500),
+                    ])
+                    ->columns(2)
+                    ->icon('heroicon-o-share')
+                    ->collapsible(),
             ])
             ->statePath('data');
     }
@@ -97,6 +145,14 @@ class Configuracoes extends Page
 
         foreach (array_keys(self::$secoes) as $chave) {
             Configuracao::set($chave, ($data[$chave] ?? false) ? '1' : '0');
+        }
+
+        foreach (array_keys(self::$integracoes) as $chave) {
+            $valor = $data[$chave] ?? '';
+            if (str_ends_with($chave, '_ativo')) {
+                $valor = $valor ? '1' : '0';
+            }
+            Configuracao::set($chave, (string) $valor);
         }
 
         Notification::make()

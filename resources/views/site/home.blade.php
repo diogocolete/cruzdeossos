@@ -24,6 +24,7 @@
           @if($secoes['sec_integrantes'] ?? true)<li><a href="#crew">Integrantes</a></li>@endif
           @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}">Galeria</a></li>@endif
           @if($secoes['sec_noticias'] ?? true)<li><a href="#news">Notícias</a></li>@endif
+          @if($secoes['sec_posts'] ?? true)<li><a href="#posts">Posts</a></li>@endif
           @if($secoes['sec_contato'] ?? true)<li><a href="#contact">Contato</a></li>@endif
         </ul>
       </nav>
@@ -226,6 +227,39 @@
   </section>
   @endif
 
+  <!-- ===== POSTS EM DESTAQUE ===== -->
+  @if(($secoes['sec_posts'] ?? true) && $postsDestaque->isNotEmpty())
+  <section class="news posts-destaque" id="posts">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <p class="section__kicker">Da estrada para o blog</p>
+          <h2 class="section__title">Posts em Destaque</h2>
+        </div>
+        <a href="{{ route('posts.index') }}" class="btn btn--ghost">Ver todos</a>
+      </div>
+      <div class="news__grid">
+        @foreach($postsDestaque as $post)
+        <article class="news__card">
+          <a href="{{ route('posts.show', $post->slug) }}" class="news__img" style="background-image:url('{{ $post->imagem ? asset('storage/' . $post->imagem) : asset('assets/banner-3-esboco.png') }}')">
+            @if($post->destaque)<span class="news__badge">Destaque</span>@endif
+          </a>
+          <div class="news__body">
+            <div class="news__meta">
+              <span>{{ ($post->published_at ?? $post->created_at)->format('d M Y') }}</span> ·
+              <a href="{{ route('integrantes.show', $post->integrante->slugPublico()) }}" class="news__autor">{{ $post->integrante->apelido }}</a>
+            </div>
+            <h3><a href="{{ route('posts.show', $post->slug) }}">{{ $post->titulo }}</a></h3>
+            <p>{{ str(strip_tags($post->conteudo))->limit(120) }}</p>
+            <a href="{{ route('posts.show', $post->slug) }}" class="news__more">Ler mais &rarr;</a>
+          </div>
+        </article>
+        @endforeach
+      </div>
+    </div>
+  </section>
+  @endif
+
   <!-- ===== CREW MEMBERS ===== -->
   @if($secoes['sec_integrantes'] ?? true)
   <section class="crew" id="crew">
@@ -237,14 +271,14 @@
       </div>
       <div class="crew__grid">
         @foreach($integrantes as $integrante)
-        <article class="crew__card">
+        <a href="{{ route('integrantes.show', $integrante->slugPublico()) }}" class="crew__card">
           <div class="crew__photo" style="background-image:url('{{ $integrante->foto ? asset('storage/' . $integrante->foto) : asset('assets/vetor-patch-03.png') }}')"></div>
           <div class="crew__info">
             <div class="crew__patch"><img src="{{ asset('assets/vetor-patch-03.png') }}" alt="Cruz de Ossos" /></div>
             <h3>{{ $integrante->apelido }}</h3>
             <span class="crew__role">{{ $integrante->cargo }}</span>
           </div>
-        </article>
+        </a>
         @endforeach
       </div>
     </div>

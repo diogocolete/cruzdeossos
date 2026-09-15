@@ -95,6 +95,17 @@ Usar **apenas apelido e cargo**. NÃO incluir dados sensíveis dos PDFs (endere�
 - A data de fundação é **22/03/2025** — não inventar tempo de existência
 - Não usar selo de "anos de estrada" — a irmandade é recente
 
+### Privacidade da Ficha do Integrante (regra permanente)
+
+A **ficha do integrante** (model `Ficha`, tabela `fichas`) contém dados sensíveis: nome completo, endereço, saúde, contatos de emergência e anexos.
+
+- **Visitante do site NUNCA pode ver nenhum dado da ficha** — ela existe apenas na área privada (`/admin`). Nenhuma rota, view ou API pública pode expor esses dados.
+- **Um membro NUNCA pode ver a ficha de outro membro** — apenas a própria ficha (vinculada via `users.integrante_id`).
+- **Presidente e Secretário** podem ver e modificar **todas** as fichas.
+- **Toda alteração gera uma nova revisão** (`ficha_revisions`) — nunca sobrescrever dados anteriores; sempre incrementar `fichas.revisao` e gravar snapshot.
+- **Anexos da ficha ficam em disco privado** (`local`), nunca em `public/storage`.
+- Enforce: `FichaResource::getEloquentQuery()` (escopo), `FichaResource::podeVerFicha()` e `FichaPdfController` (abort 403).
+
 ## Comandos
 
 - **Servir o draft local:** `cd draft && python3 -m http.server 8123`
@@ -205,6 +216,21 @@ php artisan tinker
 │   └── AGENTS.md                   # este arquivo
 └── AGENTS.md                        # cópia na raiz do projeto
 ```
+
+### Funcionalidades da área de membros
+
+| Recurso | Onde | Detalhe |
+|---------|------|---------|
+| Posts | `/admin/posts` (privado) → `/posts`, `/posts/{slug}` (público) | Título, membro, datas, editor rico, imagem, vídeo (upload ou URL YouTube/Vimeo) |
+| Destaque na home | Toggle `destaque` no post (só diretoria) | Home mostra até 6: destaques primeiro, completa com recentes |
+| Página do membro | `/integrantes/{slug}` (público) | Foto, apelido, cargo, bio + posts do membro |
+| Meu Perfil | `/admin/meu-perfil` | Membro edita foto/bio/slug da própria página pública |
+| Ficha do integrante | `/admin/fichas` (privado, com revisões) | Ver "Privacidade da Ficha" abaixo — acesso restrito |
+| Integrações sociais | Configurações → Integrações | Checkbox por rede no post; envio via fila; log em `post_shares` |
+
+- Login admin (`users`) ↔ membro (`integrantes`) via `users.integrante_id`.
+- Diretoria = papéis `Presidente` + `Secretário` (`$user->isDiretoria()`): gerenciam todos os posts/fichas e marcam destaque. Membros comuns só editam os próprios posts e a própria ficha.
+- Compartilhamento social: `PostShare` registra cada envio (pendente/enviado/erro/desativado); `SocialPublisher` só dispara se a rede estiver **ativa E configurada** — caso contrário marca `desativado`. Reenvio manual disponível no log do post.
 
 ### Repositório Git
 
