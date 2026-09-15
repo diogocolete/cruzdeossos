@@ -150,6 +150,31 @@ class SiteController extends Controller
         return view('site.posts.show', compact('post', 'secoes', 'conteudo', 'outrosPosts'));
     }
 
+    public function inscricao(Request $request)
+    {
+        // Honeypot: bots preenchem; humanos nunca veem o campo
+        if ($request->filled('website')) {
+            return redirect(route('home') . '#join')
+                ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
+        }
+
+        $request->validate([
+            'nome_completo' => ['required', 'string', 'max:200'],
+            'rede_social'   => ['nullable', 'string', 'max:150'],
+            'email'         => ['nullable', 'email', 'max:150'],
+            'telefone'      => ['nullable', 'string', 'max:30'],
+            'whatsapp'      => ['nullable', 'string', 'max:30'],
+            'endereco'      => ['nullable', 'string', 'max:250'],
+        ]);
+
+        \App\Models\Inscricao::create($request->only([
+            'nome_completo', 'rede_social', 'email', 'telefone', 'whatsapp', 'endereco',
+        ]));
+
+        return redirect(route('home') . '#join')
+            ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
+    }
+
     public function integranteShow(string $slug)
     {
         $integrante = Integrante::ativos()

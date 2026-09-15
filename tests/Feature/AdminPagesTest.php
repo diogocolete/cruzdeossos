@@ -65,6 +65,71 @@ class AdminPagesTest extends TestCase
             ->assertDontSee('endereco');
     }
 
+    public function test_formulario_junte_se(): void
+    {
+        $this->post(route('junte-se.store'), [
+            'nome_completo' => 'Candidato Teste',
+            'rede_social' => '@candidato',
+            'email' => 'cand@teste.local',
+            'telefone' => '41 99999-0000',
+            'whatsapp' => '41 99999-0000',
+            'endereco' => 'Curitiba',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('inscricoes', ['nome_completo' => 'Candidato Teste', 'status' => 'novo']);
+
+        // honeypot: preenchido = bot, finge sucesso sem salvar
+        $antes = \App\Models\Inscricao::count();
+        $this->post(route('junte-se.store'), [
+            'nome_completo' => 'Bot',
+            'website' => 'http://spam',
+        ]);
+        $this->assertEquals($antes, \App\Models\Inscricao::count());
+    }
+
+    public function test_usuario_inativo_nao_acessa_painel(): void
+    {
+        $ficha = Ficha::firstOrFail();
+        $thiago = Integrante::where('apelido', 'Thiago')->firstOrFail();
+
+        $user = User::create([
+            'name' => 'Thiago', 'email' => 'thiago2@teste.local',
+            'password' => bcrypt('x'), 'integrante_id' => $thiago->id, 'ativo' => false,
+        ]);
+        $user->assignRole('Membro');
+
+        $this->assertFalse($user->canAccessPanel(\Filament\Facades\Filament::getPanel('admin')));
+
+        // painel bloqueia mesmo autenticado
+        $this->actingAs($user)->get('/admin')->assertForbidden();
+
+        $user->delete();
+    }
+
+    public function test_papeis_e_inscricoes_restritos_a_diretoria(): void
+    {
+        $thiago = Integrante::where('apelido', 'Thiago')->firstOrFail();
+        $membro = User::create([
+            'name' => 'T', 'email' => 't'.uniqid().'@teste.local',
+            'password' => bcrypt('x'), 'integrante_id' => $thiago->id,
+        ]);
+        $membro->assignRole('Membro');
+
+        // membro comum não acessa gestão de usuários/papéis
+        $this->actingAs($membro)->get('/admin/users')->assertForbidden();
+        $this->actingAs($membro)->get('/admin/roles')->assertForbidden();
+        $status = $this->actingAs($membro)->get('/admin/inscricoes')->getStatusCode();
+        $this->assertContains($status, [403, 404]);
+
+        // diretoria acessa
+        $admin = $this->admin();
+        $this->actingAs($admin)->get('/admin/users')->assertOk();
+        $this->actingAs($admin)->get('/admin/roles')->assertOk();
+        $this->actingAs($admin)->get('/admin/inscricoes')->assertOk();
+
+        $membro->delete();
+    }
+
     public function test_pdf_ficha_exige_login(): void
     {
         $ficha = Ficha::firstOrFail();

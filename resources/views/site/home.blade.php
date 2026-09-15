@@ -323,8 +323,23 @@
         <h2 class="section__title">{{ $conteudo['junte_se_titulo'] }}</h2>
         <p>{{ $integrantes->count() }} {{ $conteudo['junte_se_texto'] }}</p>
       </div>
-      <form class="join__form" onsubmit="return false;">
-        <input type="email" placeholder="Seu melhor e-mail" required />
+      <form class="join__form join__form--full" method="POST" action="{{ route('junte-se.store') }}">
+        @csrf
+        @if(session('inscricao_ok'))
+        <div class="join__msg join__msg--ok">{{ session('inscricao_ok') }}</div>
+        @endif
+        @if($errors->has('inscricao'))
+        <div class="join__msg join__msg--erro">{{ $errors->first('inscricao') }}</div>
+        @endif
+        <div class="join__fields">
+          <input type="text" name="nome_completo" placeholder="Nome completo *" value="{{ old('nome_completo') }}" required />
+          <input type="text" name="rede_social" placeholder="Instagram / rede social" value="{{ old('rede_social') }}" />
+          <input type="email" name="email" placeholder="E-mail" value="{{ old('email') }}" />
+          <input type="tel" name="telefone" placeholder="Telefone" value="{{ old('telefone') }}" />
+          <input type="tel" name="whatsapp" placeholder="WhatsApp" value="{{ old('whatsapp') }}" />
+          <input type="text" name="endereco" placeholder="Endereço (cidade/bairro)" value="{{ old('endereco') }}" />
+          <input type="text" name="website" class="join__hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        </div>
         <button type="submit" class="btn btn--primary">Inscrever</button>
       </form>
     </div>

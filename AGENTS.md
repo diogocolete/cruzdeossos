@@ -106,6 +106,14 @@ A **ficha do integrante** (model `Ficha`, tabela `fichas`) contém dados sensív
 - **Anexos da ficha ficam em disco privado** (`local`), nunca em `public/storage`.
 - Enforce: `FichaResource::getEloquentQuery()` (escopo), `FichaResource::podeVerFicha()` e `FichaPdfController` (abort 403).
 
+### Cargo, Inscrições e Acesso (regras permanentes)
+
+- **O cargo do integrante tem fonte única**: `integrantes.cargo`. A ficha NÃO guarda cargo editável — form, tabela, infolist e PDF leem `integrante.cargo`. Para mudar o cargo, editar em Integrantes.
+- **Inscrições "Junte-se"** (`inscricoes`, `InscricaoResource`): dados de contato de candidatos são privados — nunca expor em rota pública. Triagem (status/notas) restrita à diretoria ou permissão `view/edit inscricoes`.
+- **Ativação de acesso** (`users.ativo`): `false` bloqueia o painel via `User::canAccessPanel()`. Só **Presidente e Secretário** (`User::isDiretoria()`) podem ativar/desativar; ninguém desativa a si mesmo; só Presidente desativa outro Presidente.
+- **Papéis e permissões** (`RoleResource`, `/admin/roles`): só diretoria. O papel **Presidente** não aparece/é editável (sempre acesso total) — não remover isso, evita lockout.
+- Gestão de usuários (`UserResource`) e papéis é restrita à diretoria — não abrir para outros papéis.
+
 ## Comandos
 
 - **Servir o draft local:** `cd draft && python3 -m http.server 8123`

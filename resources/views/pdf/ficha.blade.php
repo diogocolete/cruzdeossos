@@ -105,7 +105,7 @@
         <div class="nascido">Nascido: {{ $ficha->data_nascimento?->format('d/m/Y') ?? '—' }}</div>
 
         <div class="campo"><span class="label">APELIDO:</span> {{ $ficha->apelido ?? '—' }}</div>
-        <div class="campo"><span class="label">CARGO:</span> {{ $ficha->cargo ?? '—' }}</div>
+        <div class="campo"><span class="label">CARGO:</span> {{ $ficha->integrante?->cargo ?? $ficha->cargo ?? '—' }}</div>
         <div class="campo"><span class="label">TIPO SANGUÍNEO:</span> {{ $ficha->tipo_sanguineo ?? '—' }}</div>
         <div class="campo"><span class="label">ALÉRGICO:</span> {{ $ficha->alergias ?? '—' }}</div>
         <div class="campo"><span class="label">REMÉDIOS:</span> {{ $ficha->remedios ?? '—' }}</div>

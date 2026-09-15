@@ -30,6 +30,14 @@ class EditFicha extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Cargo vem do cadastro do integrante (fonte única)
+        $data['cargo'] = \App\Models\Integrante::find($data['integrante_id'])?->cargo;
+
+        return $data;
+    }
+
     protected function afterSave(): void
     {
         // Nunca sobrescreve: cada edição gera uma nova revisão.

@@ -16,6 +16,10 @@ class RolePermissionSeeder extends Seeder
             'view noticias', 'create noticias', 'edit noticias', 'delete noticias',
             'view galeria', 'create galeria', 'edit galeria', 'delete galeria',
             'view depoimentos', 'create depoimentos', 'edit depoimentos', 'delete depoimentos',
+            'view posts', 'create posts', 'edit posts', 'delete posts',
+            'view fichas', 'edit fichas',
+            'view inscricoes', 'edit inscricoes',
+            'manage usuarios', 'manage permissoes', 'manage configuracoes',
         ];
 
         foreach ($permissions as $perm) {

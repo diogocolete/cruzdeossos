@@ -12,6 +12,8 @@ class CreateFicha extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['revisao'] = 1;
+        // Cargo vem do cadastro do integrante (fonte única)
+        $data['cargo'] = \App\Models\Integrante::find($data['integrante_id'])?->cargo;
 
         return $data;
     }

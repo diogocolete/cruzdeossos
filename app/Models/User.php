@@ -25,6 +25,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'integrante_id',
         'password',
+        'ativo',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'ativo' => 'boolean',
         ];
     }
 
@@ -66,6 +68,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return (bool) $this->ativo;
     }
 }

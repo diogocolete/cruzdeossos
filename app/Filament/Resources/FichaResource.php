@@ -91,6 +91,7 @@ class FichaResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Integrante')
+                    ->description('O cargo exibido na ficha é herdado do cadastro do integrante — altere em Integrantes.')
                     ->schema([
                         Forms\Components\Select::make('integrante_id')
                             ->label('Integrante')
@@ -100,11 +101,7 @@ class FichaResource extends Resource
                             ->dehydrated()
                             ->required()
                             ->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('cargo')
-                            ->label('Cargo')
-                            ->maxLength(60),
-                    ])
-                    ->columns(2),
+                    ]),
 
                 Forms\Components\Section::make('Dados pessoais')
                     ->schema([
@@ -190,7 +187,7 @@ class FichaResource extends Resource
                         Infolists\Components\TextEntry::make('nome_completo')->label('Nome completo'),
                         Infolists\Components\TextEntry::make('data_nascimento')->label('Nascimento')->date('d/m/Y'),
                         Infolists\Components\TextEntry::make('apelido')->label('Apelido'),
-                        Infolists\Components\TextEntry::make('cargo')->label('Cargo'),
+                        Infolists\Components\TextEntry::make('integrante.cargo')->label('Cargo'),
                         Infolists\Components\TextEntry::make('tipo_sanguineo')->label('Tipo sanguíneo'),
                     ])
                     ->columns(4),
@@ -234,7 +231,7 @@ class FichaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('integrante.apelido')->label('Integrante')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('nome_completo')->label('Nome completo')->searchable(),
-                Tables\Columns\TextColumn::make('cargo')->label('Cargo')->badge()->color('danger'),
+                Tables\Columns\TextColumn::make('integrante.cargo')->label('Cargo')->badge()->color('danger'),
                 Tables\Columns\TextColumn::make('revisao')->label('Revisão')->badge()->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->label('Atualizada em')->dateTime('d/m/Y H:i')->sortable(),
             ])

@@ -49,6 +49,18 @@ class UserResource extends Resource
                             ->helperText(fn (string $context): string => $context === 'edit' ? 'Deixe em branco para manter a senha atual.' : ''),
                     ]),
 
+                Forms\Components\Section::make('Acesso')
+                    ->schema([
+                        Forms\Components\Toggle::make('ativo')
+                            ->label('Acesso liberado')
+                            ->helperText('Usuário desativado não consegue entrar no painel administrativo.')
+                            ->default(true)
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->disabled(fn ($record) => $record?->id === auth()->id()
+                                || ($record?->hasRole('Presidente') && ! auth()->user()?->hasRole('Presidente'))),
+                    ]),
+
                 Forms\Components\Section::make('Papel (permissões)')
                     ->schema([
                         Forms\Components\Select::make('roles')
@@ -76,10 +88,16 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('integrante.apelido')
+                    ->label('Integrante')
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Papel')
                     ->badge()
                     ->color('danger'),
+                Tables\Columns\IconColumn::make('ativo')
+                    ->label('Acesso')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
@@ -112,8 +130,11 @@ class UserResource extends Resource
         ];
     }
 
+    /**
+     * Presidente e Secretário gerenciam usuários (inclusive ativar/desativar acesso).
+     */
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasRole('Presidente');
+        return auth()->user()?->isDiretoria() ?? false;
     }
 }
