@@ -44,16 +44,62 @@
   </section>
 
   <!-- ===== GALLERY FULL ===== -->
-  <section class="gallery gallery--full">
+  <section class="gallery gallery--full" id="gallery-full">
     <div class="container">
       <div class="gallery__grid">
         @foreach($galeria as $item)
         <div class="gallery__item" data-lightbox="{{ asset('storage/' . $item->imagem) }}" data-title="{{ $item->titulo }}" data-desc="{{ $item->descricao }}">
-          <img src="{{ asset('storage/' . $item->imagem) }}" alt="{{ $item->titulo }}" loading="lazy" />
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 3'%3E%3C/svg%3E"
+               data-src="{{ asset('storage/' . $item->imagem) }}"
+               alt="{{ $item->titulo }}"
+               loading="lazy"
+               decoding="async"
+               class="lazy-img" />
           <span>{{ $item->titulo }}</span>
         </div>
         @endforeach
       </div>
+
+      @if($galeria->hasPages())
+      <nav class="pagination" aria-label="Paginação da galeria">
+        @if($galeria->onFirstPage())
+          <span class="pagination__link pagination__link--disabled">&laquo; Anterior</span>
+        @else
+          <a class="pagination__link" href="{{ $galeria->previousPageUrl() }}#gallery-full" rel="prev">&laquo; Anterior</a>
+        @endif
+
+        @php
+          $current = $galeria->currentPage();
+          $last = $galeria->lastPage();
+          $start = max(1, $current - 2);
+          $end = min($last, $current + 2);
+        @endphp
+
+        @if($start > 1)
+          <a class="pagination__link" href="{{ $galeria->url(1) }}#gallery-full">1</a>
+          @if($start > 2)<span class="pagination__ellipsis">&hellip;</span>@endif
+        @endif
+
+        @for($page = $start; $page <= $end; $page++)
+          @if($page == $current)
+            <span class="pagination__link pagination__link--active">{{ $page }}</span>
+          @else
+            <a class="pagination__link" href="{{ $galeria->url($page) }}#gallery-full">{{ $page }}</a>
+          @endif
+        @endfor
+
+        @if($end < $last)
+          @if($end < $last - 1)<span class="pagination__ellipsis">&hellip;</span>@endif
+          <a class="pagination__link" href="{{ $galeria->url($last) }}#gallery-full">{{ $last }}</a>
+        @endif
+
+        @if($galeria->hasMorePages())
+          <a class="pagination__link" href="{{ $galeria->nextPageUrl() }}#gallery-full" rel="next">Próxima &raquo;</a>
+        @else
+          <span class="pagination__link pagination__link--disabled">Próxima &raquo;</span>
+        @endif
+      </nav>
+      @endif
     </div>
   </section>
 

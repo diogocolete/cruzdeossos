@@ -196,6 +196,30 @@
     }
   });
 
+  /* ---------- LAZY LOAD IMAGES ---------- */
+  var lazyImgs = document.querySelectorAll('img.lazy-img[data-src]');
+  if ('IntersectionObserver' in window && lazyImgs.length) {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var img = entry.target;
+          img.src = img.getAttribute('data-src');
+          img.removeAttribute('data-src');
+          img.addEventListener('load', function () { img.classList.add('loaded'); });
+          img.addEventListener('error', function () { img.classList.add('loaded'); });
+          obs.unobserve(img);
+        }
+      });
+    }, { rootMargin: '200px', threshold: 0.01 });
+    lazyImgs.forEach(function (img) { io.observe(img); });
+  } else {
+    lazyImgs.forEach(function (img) {
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+      img.classList.add('loaded');
+    });
+  }
+
   /* ---------- FORMS (placeholder) ---------- */
   document.querySelectorAll('form').forEach(function (f) {
     f.addEventListener('submit', function (e) {

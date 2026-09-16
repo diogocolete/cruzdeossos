@@ -87,7 +87,7 @@ class SiteController extends Controller
             return redirect()->route('home');
         }
 
-        $galeria = Galeria::publicados()->get();
+        $galeria = Galeria::publicados()->paginate(24);
         $secoes = Configuracao::secoes();
 
         $conteudo = Conteudo::muitos([
