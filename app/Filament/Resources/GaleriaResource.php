@@ -38,6 +38,10 @@ class GaleriaResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('publicado')
                     ->default(true),
+                Forms\Components\Toggle::make('destaque')
+                    ->label('Destaque na página inicial')
+                    ->helperText('Quando ativo, a foto aparece na seção Galeria da página inicial.')
+                    ->default(false),
             ]);
     }
 
@@ -48,6 +52,7 @@ class GaleriaResource extends Resource
                 Tables\Columns\ImageColumn::make('imagem')->disk('public'),
                 Tables\Columns\TextColumn::make('titulo')->searchable(),
                 Tables\Columns\IconColumn::make('publicado')->boolean(),
+                Tables\Columns\IconColumn::make('destaque')->boolean(),
                 Tables\Columns\TextColumn::make('ordem')->sortable(),
             ])
             ->defaultSort('ordem')

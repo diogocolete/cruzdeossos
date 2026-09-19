@@ -177,7 +177,7 @@
   @endif
 
   <!-- ===== GALLERY ===== -->
-  @if($secoes['sec_galeria'] ?? true)
+  @if(($secoes['sec_galeria'] ?? true) && $galeria->isNotEmpty())
   <section class="gallery" id="gallery">
     <div class="container">
       <div class="section__head section__head--center">

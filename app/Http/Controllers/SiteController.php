@@ -25,7 +25,7 @@ class SiteController extends Controller
         $eventos = Evento::ordenados()->get();
         $noticias = Noticia::publicados()->limit(3)->get();
         $postsDestaque = Post::paraHome(6);
-        $galeria = Galeria::publicados()->limit(6)->get();
+        $galeria = Galeria::destaques()->limit(6)->get();
         $depoimentos = Depoimento::publicados()->get();
         $beneficios = Beneficio::publicados()->get();
         $recursos = Recurso::publicados()->get();

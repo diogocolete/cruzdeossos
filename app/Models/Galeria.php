@@ -11,12 +11,17 @@ class Galeria extends Model
 
     protected $table = 'galeria';
 
-    protected $fillable = ['titulo', 'imagem', 'descricao', 'ordem', 'publicado'];
+    protected $fillable = ['titulo', 'imagem', 'descricao', 'ordem', 'publicado', 'destaque'];
 
-    protected $casts = ['publicado' => 'boolean'];
+    protected $casts = ['publicado' => 'boolean', 'destaque' => 'boolean'];
 
     public function scopePublicados($query)
     {
         return $query->where('publicado', true)->orderBy('ordem');
+    }
+
+    public function scopeDestaques($query)
+    {
+        return $query->publicados()->where('destaque', true);
     }
 }
