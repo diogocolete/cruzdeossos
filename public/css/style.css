@@ -448,6 +448,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 16px;
 }
 
+/* ===== JOIN STEP 2 ===== */
+.join__radio-group {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding: 4px 0;
+}
+.join__radio-label { color: var(--cream); font-size: 15px; }
+.join__radio { display: flex; align-items: center; gap: 6px; color: var(--cream-dim); font-size: 15px; cursor: pointer; }
+.join__radio input { accent-color: var(--red); width: 16px; height: 16px; }
+
 /* ===== NOSSA SEDE ===== */
 .sede__mapa { margin-top: 70px; }
 .sede__mapa iframe {

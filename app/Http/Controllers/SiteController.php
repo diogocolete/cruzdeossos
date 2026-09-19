@@ -217,8 +217,11 @@ class SiteController extends Controller
 
     public function inscricao(Request $request)
     {
-        // Honeypot: bots preenchem; humanos nunca veem o campo
-        if ($request->filled('website')) {
+        // Honeypot: bots preenchem; humanos nunca veem o campo.
+        // Nome propositalmente sem significado para o autofill do navegador
+        // nao preencher (o antigo "website" era preenchido pelo Chrome).
+        if ($request->filled('hp_field')) {
+            \Illuminate\Support\Facades\Log::info('Inscricao descartada pelo honeypot', $request->except(['hp_field', '_token']));
             return redirect()->route('junte-se')
                 ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
         }
@@ -232,12 +235,61 @@ class SiteController extends Controller
             'endereco'      => ['nullable', 'string', 'max:250'],
         ]);
 
-        \App\Models\Inscricao::create($request->only([
-            'nome_completo', 'rede_social', 'email', 'telefone', 'whatsapp', 'endereco',
-        ]));
+        $inscricao = \App\Models\Inscricao::create(array_merge(
+            $request->only([
+                'nome_completo', 'rede_social', 'email', 'telefone', 'whatsapp', 'endereco',
+            ]),
+            ['status' => 'analise_basico']
+        ));
 
-        return redirect()->route('junte-se')
-            ->with('inscricao_ok', 'Inscrição recebida! Entraremos em contato.');
+        return redirect()->route('junte-se.etapa2', $inscricao->token);
+    }
+
+    public function junteSeEtapa2(string $token)
+    {
+        $inscricao = \App\Models\Inscricao::where('token', $token)->firstOrFail();
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno();
+
+        return view('site.junte-se-etapa2', compact('inscricao', 'secoes', 'conteudo'));
+    }
+
+    public function inscricaoEtapa2(Request $request, string $token)
+    {
+        $inscricao = \App\Models\Inscricao::where('token', $token)->firstOrFail();
+
+        if ($request->filled('hp_field')) {
+            return redirect()->route('home');
+        }
+
+        $request->validate([
+            'nome_completo'       => ['required', 'string', 'max:200'],
+            'endereco'            => ['required', 'string', 'max:250'],
+            'cpf'                 => ['required', 'string', 'max:14'],
+            'rg'                  => ['required', 'string', 'max:20'],
+            'data_nascimento'     => ['required', 'date', 'before:today'],
+            'moto'                => ['required', 'string', 'max:150'],
+            'ja_pertenceu_clube'  => ['required', 'in:0,1'],
+            'clube_anterior'      => ['nullable', 'string', 'max:150', 'required_if:ja_pertenceu_clube,1'],
+        ]);
+
+        $inscricao->update(array_merge(
+            $request->only([
+                'nome_completo', 'endereco', 'cpf', 'rg',
+                'data_nascimento', 'moto', 'clube_anterior',
+            ]),
+            [
+                'ja_pertenceu_clube' => $request->input('ja_pertenceu_clube') === '1',
+                'clube_anterior' => $request->input('ja_pertenceu_clube') === '1' ? $request->input('clube_anterior') : null,
+                'status' => 'analise_completo',
+            ]
+        ));
+
+        return view('site.junte-se-sucesso', [
+            'secoes' => Configuracao::secoes(),
+            'conteudo' => $this->conteudoInterno(),
+            'inscricao' => $inscricao,
+        ]);
     }
 
     public function integranteShow(string $slug)

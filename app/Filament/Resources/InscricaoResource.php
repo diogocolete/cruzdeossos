@@ -55,7 +55,7 @@ class InscricaoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Dados do candidato')
+                Forms\Components\Section::make('Cadastro básico (etapa 1)')
                     ->schema([
                         Forms\Components\TextInput::make('nome_completo')->label('Nome completo')->disabled(),
                         Forms\Components\TextInput::make('rede_social')->label('Rede social')->disabled(),
@@ -65,6 +65,18 @@ class InscricaoResource extends Resource
                         Forms\Components\TextInput::make('endereco')->label('Endereço')->disabled(),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Cadastro completo (etapa 2)')
+                    ->schema([
+                        Forms\Components\TextInput::make('cpf')->label('CPF')->disabled(),
+                        Forms\Components\TextInput::make('rg')->label('RG')->disabled(),
+                        Forms\Components\DatePicker::make('data_nascimento')->label('Data de nascimento')->disabled()->displayFormat('d/m/Y'),
+                        Forms\Components\TextInput::make('moto')->label('Moto')->disabled(),
+                        Forms\Components\Toggle::make('ja_pertenceu_clube')->label('Já pertenceu a clube')->disabled(),
+                        Forms\Components\TextInput::make('clube_anterior')->label('Clube anterior')->disabled(),
+                    ])
+                    ->columns(2)
+                    ->visible(fn ($record) => $record?->cadastroCompleto() ?? false),
 
                 Forms\Components\Section::make('Triagem')
                     ->schema([
@@ -91,10 +103,11 @@ class InscricaoResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn ($state) => Inscricao::STATUS[$state] ?? $state)
                     ->color(fn ($state) => match ($state) {
-                        'novo'       => 'danger',
-                        'em_contato' => 'warning',
-                        'aprovado'   => 'success',
-                        default      => 'gray',
+                        'analise_basico'   => 'warning',
+                        'analise_completo' => 'info',
+                        'aprovado'         => 'success',
+                        'inapto'           => 'danger',
+                        default            => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')->label('Recebida em')->dateTime('d/m/Y H:i')->sortable(),
             ])

@@ -38,7 +38,7 @@
             <input type="tel" name="telefone" placeholder="Telefone" value="{{ old('telefone') }}" />
             <input type="tel" name="whatsapp" placeholder="WhatsApp" value="{{ old('whatsapp') }}" />
             <input type="text" name="endereco" placeholder="Endereço (cidade/bairro)" value="{{ old('endereco') }}" />
-            <input type="text" name="website" class="join__hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <input type="text" name="hp_field" class="join__hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
           </div>
           <button type="submit" class="btn btn--primary">{{ $conteudo['junte_se_btn'] ?: 'Enviar inscrição' }}</button>
         </form>

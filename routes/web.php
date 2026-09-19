@@ -16,6 +16,10 @@ Route::get('/junte-se', [SiteController::class, 'junteSe'])->name('junte-se');
 Route::post('/junte-se', [SiteController::class, 'inscricao'])
     ->name('junte-se.store')
     ->middleware('throttle:5,1');
+Route::get('/junte-se/etapa-2/{token}', [SiteController::class, 'junteSeEtapa2'])->name('junte-se.etapa2');
+Route::post('/junte-se/etapa-2/{token}', [SiteController::class, 'inscricaoEtapa2'])
+    ->name('junte-se.etapa2.store')
+    ->middleware('throttle:5,1');
 
 // Área privada — PDF da ficha (exige login do painel + permissão)
 Route::middleware([FilamentAuthenticate::class])->group(function () {
