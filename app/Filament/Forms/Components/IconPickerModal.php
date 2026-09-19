@@ -10,12 +10,6 @@ class IconPickerModal extends Field
 
     protected array $icons = [];
 
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
-        $this->icons = $this->loadIcons();
-    }
-
     private function loadIcons(): array
     {
         $factory = app(\BladeUI\Icons\Factory::class);
@@ -42,6 +36,10 @@ class IconPickerModal extends Field
 
     public function getIcons(): array
     {
+        if (empty($this->icons)) {
+            $this->icons = $this->loadIcons();
+        }
+
         return $this->icons;
     }
 }
