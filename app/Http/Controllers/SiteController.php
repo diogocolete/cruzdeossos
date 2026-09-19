@@ -131,6 +131,14 @@ class SiteController extends Controller
             'sede_pasta' => '',
         ]);
 
+        // Aceita tanto a URL do embed quanto o codigo <iframe> completo do Maps
+        $mapsEmbed = (string) $conteudo['sede_maps_embed'];
+        if (str_contains($mapsEmbed, '<iframe')) {
+            preg_match('/src="([^"]+)"/', $mapsEmbed, $m);
+            $mapsEmbed = $m[1] ?? '';
+        }
+        $conteudo['sede_maps_embed'] = $mapsEmbed;
+
         $fotosSede = $conteudo['sede_pasta']
             ? Galeria::publicados()->daPasta($conteudo['sede_pasta'])->get()
             : collect();

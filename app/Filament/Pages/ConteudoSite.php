@@ -67,7 +67,7 @@ class ConteudoSite extends Page
             'sede_titulo' => ['label' => 'Nossa Sede — Título', 'tipo' => 'text', 'default' => 'Nossa Sede', 'section' => 'Nossa Sede'],
             'sede_texto' => ['label' => 'Nossa Sede — Texto', 'tipo' => 'textarea', 'default' => 'Nossa sede é o ponto de encontro da irmandade — onde nascem os passeios, as reuniões e as amizades que a estrada fortalece.', 'section' => 'Nossa Sede'],
             'sede_imagem' => ['label' => 'Nossa Sede — Imagem', 'tipo' => 'upload', 'default' => '', 'section' => 'Nossa Sede', 'dir' => 'sede'],
-            'sede_maps_embed' => ['label' => 'Nossa Sede — URL do Google Maps (embed)', 'tipo' => 'text', 'default' => '', 'section' => 'Nossa Sede'],
+            'sede_maps_embed' => ['label' => 'Nossa Sede — Google Maps (cole a URL ou o código iframe completo)', 'tipo' => 'textarea', 'default' => '', 'section' => 'Nossa Sede'],
             'sede_pasta' => ['label' => 'Nossa Sede — Pasta da galeria com as fotos', 'tipo' => 'pasta', 'default' => '', 'section' => 'Nossa Sede'],
 
             // CONTATO
