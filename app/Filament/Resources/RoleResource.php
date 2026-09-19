@@ -9,7 +9,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
@@ -39,8 +38,6 @@ class RoleResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $permissoes = Permission::orderBy('name')->pluck('name', 'name')->toArray();
-
         return $form
             ->schema([
                 Forms\Components\Section::make('Papel')
@@ -59,7 +56,6 @@ class RoleResource extends Resource
                         Forms\Components\CheckboxList::make('permissions')
                             ->label('')
                             ->relationship('permissions', 'name')
-                            ->options($permissoes)
                             ->columns(4)
                             ->bulkToggleable(),
                     ]),
