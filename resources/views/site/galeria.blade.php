@@ -23,6 +23,7 @@
           @if($secoes['sec_evolucao'] ?? true)<li><a href="{{ route('home') }}#evolution">Evolução</a></li>@endif
           @if($secoes['sec_integrantes'] ?? true)<li><a href="{{ route('home') }}#crew">Integrantes</a></li>@endif
           @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}" class="active">Galeria</a></li>@endif
+          @if($secoes['sec_sede'] ?? false)<li><a href="{{ route('nossa-sede') }}">Nossa Sede</a></li>@endif
           @if($secoes['sec_noticias'] ?? true)<li><a href="{{ route('home') }}#news">Notícias</a></li>@endif
           @if($secoes['sec_contato'] ?? true)<li><a href="{{ route('home') }}#contact">Contato</a></li>@endif
         </ul>
@@ -46,6 +47,14 @@
   <!-- ===== GALLERY FULL ===== -->
   <section class="gallery gallery--full" id="gallery-full">
     <div class="container">
+      @if(count($pastas) > 0)
+      <div class="gallery__filters">
+        <a href="{{ route('galeria') }}#gallery-full" class="gallery__filter {{ !$pastaAtual ? 'gallery__filter--active' : '' }}">Todas</a>
+        @foreach($pastas as $pasta)
+        <a href="{{ route('galeria', ['pasta' => $pasta]) }}#gallery-full" class="gallery__filter {{ $pastaAtual === $pasta ? 'gallery__filter--active' : '' }}">{{ $pasta }}</a>
+        @endforeach
+      </div>
+      @endif
       <div class="gallery__grid">
         @foreach($galeria as $item)
         <div class="gallery__item" data-lightbox="{{ asset('storage/' . $item->imagem) }}" data-title="{{ $item->titulo }}" data-desc="{{ $item->descricao }}">
@@ -59,6 +68,10 @@
         </div>
         @endforeach
       </div>
+
+      @if($galeria->isEmpty())
+      <p class="gallery__empty">Nenhuma foto nesta pasta.</p>
+      @endif
 
       @if($galeria->hasPages())
       <nav class="pagination" aria-label="Paginação da galeria">

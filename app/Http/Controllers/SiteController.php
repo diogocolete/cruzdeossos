@@ -81,13 +81,21 @@ class SiteController extends Controller
         ));
     }
 
-    public function galeria()
+    public function galeria(Request $request)
     {
         if (!Configuracao::secaoAtiva('sec_galeria')) {
             return redirect()->route('home');
         }
 
-        $galeria = Galeria::publicados()->paginate(24);
+        $pastaAtual = $request->query('pasta');
+
+        $query = Galeria::publicados();
+        if ($pastaAtual) {
+            $query->daPasta($pastaAtual);
+        }
+
+        $galeria = $query->paginate(24)->withQueryString();
+        $pastas = Galeria::pastas(apenasPublicados: true);
         $secoes = Configuracao::secoes();
 
         $conteudo = Conteudo::muitos([
@@ -104,7 +112,30 @@ class SiteController extends Controller
             'footer_endereco' => 'Curitiba, PR',
         ]);
 
-        return view('site.galeria', compact('galeria', 'secoes', 'conteudo'));
+        return view('site.galeria', compact('galeria', 'secoes', 'conteudo', 'pastas', 'pastaAtual'));
+    }
+
+    public function nossaSede()
+    {
+        if (!Configuracao::secaoAtiva('sec_sede')) {
+            return redirect()->route('home');
+        }
+
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno([
+            'sede_kicker' => 'Onde nos encontramos',
+            'sede_titulo' => 'Nossa Sede',
+            'sede_texto' => '',
+            'sede_imagem' => '',
+            'sede_maps_embed' => '',
+            'sede_pasta' => '',
+        ]);
+
+        $fotosSede = $conteudo['sede_pasta']
+            ? Galeria::publicados()->daPasta($conteudo['sede_pasta'])->get()
+            : collect();
+
+        return view('site.nossa-sede', compact('secoes', 'conteudo', 'fotosSede'));
     }
 
     /**
@@ -122,6 +153,19 @@ class SiteController extends Controller
             'footer_email' => 'contato@cruzdeossos.com.br',
             'footer_endereco' => 'Curitiba, PR',
         ], $extras));
+    }
+
+    public function noticiaShow(string $slug)
+    {
+        $noticia = Noticia::publicados()->with('user')->where('slug', $slug)->firstOrFail();
+        $secoes = Configuracao::secoes();
+        $conteudo = $this->conteudoInterno();
+        $outrasNoticias = Noticia::publicados()
+            ->where('id', '!=', $noticia->id)
+            ->limit(3)
+            ->get();
+
+        return view('site.noticias.show', compact('noticia', 'secoes', 'conteudo', 'outrasNoticias'));
     }
 
     public function posts()

@@ -62,6 +62,14 @@ class ConteudoSite extends Page
             'junte_se_btn' => ['label' => 'Junte-se — Texto do botão', 'tipo' => 'text', 'default' => 'Enviar inscrição', 'section' => 'Junte-se ao Clube'],
             'junte_se_imagem' => ['label' => 'Junte-se — Imagem', 'tipo' => 'upload', 'default' => 'junte-se/junte-se-moto.jpg', 'section' => 'Junte-se ao Clube', 'dir' => 'junte-se'],
 
+            // NOSSA SEDE
+            'sede_kicker' => ['label' => 'Nossa Sede — Kicker', 'tipo' => 'text', 'default' => 'Onde nos encontramos', 'section' => 'Nossa Sede'],
+            'sede_titulo' => ['label' => 'Nossa Sede — Título', 'tipo' => 'text', 'default' => 'Nossa Sede', 'section' => 'Nossa Sede'],
+            'sede_texto' => ['label' => 'Nossa Sede — Texto', 'tipo' => 'textarea', 'default' => 'Nossa sede é o ponto de encontro da irmandade — onde nascem os passeios, as reuniões e as amizades que a estrada fortalece.', 'section' => 'Nossa Sede'],
+            'sede_imagem' => ['label' => 'Nossa Sede — Imagem', 'tipo' => 'upload', 'default' => '', 'section' => 'Nossa Sede', 'dir' => 'sede'],
+            'sede_maps_embed' => ['label' => 'Nossa Sede — URL do Google Maps (embed)', 'tipo' => 'text', 'default' => '', 'section' => 'Nossa Sede'],
+            'sede_pasta' => ['label' => 'Nossa Sede — Pasta da galeria com as fotos', 'tipo' => 'pasta', 'default' => '', 'section' => 'Nossa Sede'],
+
             // CONTATO
             'contato_titulo' => ['label' => 'Contato — Título', 'tipo' => 'text', 'default' => 'Tem dúvidas? Não espere, vamos conversar', 'section' => 'Contato'],
             'contato_telefone' => ['label' => 'Contato — Telefone', 'tipo' => 'text', 'default' => '+55 (41) 99999-9999', 'section' => 'Contato'],
@@ -100,6 +108,12 @@ class ConteudoSite extends Page
                         ->label($config['label'])
                         ->rows(3)
                         ->default($config['default']);
+                } elseif ($config['tipo'] === 'pasta') {
+                    $componentes[] = Forms\Components\Select::make($chave)
+                        ->label($config['label'])
+                        ->options(\App\Models\Galeria::pastas())
+                        ->placeholder('Selecione a pasta')
+                        ->helperText('As fotos desta pasta da galeria aparecem na página Nossa Sede.');
                 } elseif ($config['tipo'] === 'upload') {
                     $componentes[] = Forms\Components\FileUpload::make($chave)
                         ->label($config['label'])

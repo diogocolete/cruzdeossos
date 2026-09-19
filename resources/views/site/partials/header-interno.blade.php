@@ -14,6 +14,7 @@
         @if($secoes['sec_evolucao'] ?? true)<li><a href="{{ route('home') }}#evolution">Evolução</a></li>@endif
         @if($secoes['sec_integrantes'] ?? true)<li><a href="{{ route('home') }}#crew">Integrantes</a></li>@endif
         @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}" class="{{ request()->routeIs('galeria') ? 'active' : '' }}">Galeria</a></li>@endif
+        @if($secoes['sec_sede'] ?? false)<li><a href="{{ route('nossa-sede') }}" class="{{ request()->routeIs('nossa-sede') ? 'active' : '' }}">Nossa Sede</a></li>@endif
         @if($secoes['sec_posts'] ?? true)<li><a href="{{ route('posts.index') }}" class="{{ request()->routeIs('posts.*') ? 'active' : '' }}">Posts</a></li>@endif
         @if($secoes['sec_noticias'] ?? true)<li><a href="{{ route('home') }}#news">Notícias</a></li>@endif
         @if($secoes['sec_contato'] ?? true)<li><a href="{{ route('home') }}#contact">Contato</a></li>@endif

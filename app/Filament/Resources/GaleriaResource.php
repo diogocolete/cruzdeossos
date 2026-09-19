@@ -36,6 +36,12 @@ class GaleriaResource extends Resource
                 Forms\Components\TextInput::make('ordem')
                     ->numeric()
                     ->default(0),
+                Forms\Components\TextInput::make('pasta')
+                    ->label('Pasta')
+                    ->placeholder('Ex: Passeios, Sede, Eventos')
+                    ->helperText('Agrupa as fotos para organização e filtros. Use "Sede" para a página Nossa Sede.')
+                    ->datalist(Galeria::pastas())
+                    ->maxLength(100),
                 Forms\Components\Toggle::make('publicado')
                     ->default(true),
                 Forms\Components\Toggle::make('destaque')
@@ -53,9 +59,14 @@ class GaleriaResource extends Resource
                 Tables\Columns\TextColumn::make('titulo')->searchable(),
                 Tables\Columns\IconColumn::make('publicado')->boolean(),
                 Tables\Columns\IconColumn::make('destaque')->boolean(),
+                Tables\Columns\TextColumn::make('pasta')->badge()->color('gray')->sortable(),
                 Tables\Columns\TextColumn::make('ordem')->sortable(),
             ])
             ->defaultSort('ordem')
+            ->filters([
+                Tables\Filters\SelectFilter::make('pasta')
+                    ->options(Galeria::pastas()),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

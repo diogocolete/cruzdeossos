@@ -11,7 +11,7 @@ class Galeria extends Model
 
     protected $table = 'galeria';
 
-    protected $fillable = ['titulo', 'imagem', 'descricao', 'ordem', 'publicado', 'destaque'];
+    protected $fillable = ['titulo', 'imagem', 'descricao', 'ordem', 'publicado', 'destaque', 'pasta'];
 
     protected $casts = ['publicado' => 'boolean', 'destaque' => 'boolean'];
 
@@ -23,5 +23,23 @@ class Galeria extends Model
     public function scopeDestaques($query)
     {
         return $query->publicados()->where('destaque', true);
+    }
+
+    public function scopeDaPasta($query, string $pasta)
+    {
+        return $query->where('pasta', $pasta);
+    }
+
+    public static function pastas(bool $apenasPublicados = false): array
+    {
+        $query = static::query()
+            ->whereNotNull('pasta')
+            ->where('pasta', '!=', '');
+
+        if ($apenasPublicados) {
+            $query->where('publicado', true);
+        }
+
+        return $query->distinct()->orderBy('pasta')->pluck('pasta', 'pasta')->toArray();
     }
 }

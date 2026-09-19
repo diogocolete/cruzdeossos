@@ -33,6 +33,7 @@ class Configuracoes extends Page
         'sec_noticias'     => 'Notícias',
         'sec_depoimentos'  => 'Depoimentos',
         'sec_junte_se'     => 'Junte-se (página dedicada)',
+        'sec_sede'         => 'Nossa Sede (página dedicada)',
         'sec_contato'      => 'Contato',
     ];
 

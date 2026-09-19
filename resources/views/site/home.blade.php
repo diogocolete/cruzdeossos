@@ -23,6 +23,7 @@
           @if($secoes['sec_evolucao'] ?? true)<li><a href="#evolution">Evolução</a></li>@endif
           @if($secoes['sec_integrantes'] ?? true)<li><a href="#crew">Integrantes</a></li>@endif
           @if($secoes['sec_galeria'] ?? true)<li><a href="{{ route('galeria') }}">Galeria</a></li>@endif
+          @if($secoes['sec_sede'] ?? false)<li><a href="{{ route('nossa-sede') }}">Nossa Sede</a></li>@endif
           @if($secoes['sec_noticias'] ?? true)<li><a href="#news">Notícias</a></li>@endif
           @if($secoes['sec_posts'] ?? true)<li><a href="#posts">Posts</a></li>@endif
           @if($secoes['sec_contato'] ?? true)<li><a href="#contact">Contato</a></li>@endif
@@ -213,12 +214,12 @@
       <div class="news__grid">
         @foreach($noticias as $noticia)
         <article class="news__card">
-          <div class="news__img" style="background-image:url('{{ $noticia->imagem ? asset('storage/' . $noticia->imagem) : asset('assets/banner-3-esboco.png') }}')"></div>
+          <a href="{{ route('noticias.show', $noticia->slug) }}" class="news__img" style="background-image:url('{{ $noticia->imagem ? asset('storage/' . $noticia->imagem) : asset('assets/banner-3-esboco.png') }}')"></a>
           <div class="news__body">
             <div class="news__meta"><span>{{ $noticia->data_publicacao->format('d M Y') }}</span> · <span>{{ $noticia->user->name ?? 'Admin' }}</span></div>
-            <h3>{{ $noticia->titulo }}</h3>
+            <h3><a href="{{ route('noticias.show', $noticia->slug) }}">{{ $noticia->titulo }}</a></h3>
             <p>{{ $noticia->resumo }}</p>
-            <a href="#" class="news__more">Ler mais &rarr;</a>
+            <a href="{{ route('noticias.show', $noticia->slug) }}" class="news__more">Ler mais &rarr;</a>
           </div>
         </article>
         @endforeach
