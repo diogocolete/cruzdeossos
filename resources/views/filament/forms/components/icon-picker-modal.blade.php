@@ -7,7 +7,7 @@
 <div x-data="{
         open: false,
         search: '',
-        selected: @entangle('{{ $statePath }}'),
+        selected: @entangle($statePath),
         icons: @js($icons),
         get filtered() {
             if (!this.search) return this.icons;
